@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Harta Karun - Chapter 3 My Family Time</title>
+    <style>
+        :root {
+            --primary: #2d6a4f;
+            --primary-light: #52b788;
+            --accent: #d8f3dc;
+            --gold: #ffb703;
+            --dark: #1b4332;
+            --light: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1b4332, #2d6a4f, #081c15);
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            overflow: hidden;
+            position: relative;
+            min-height: 650px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--dark);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--gold);
+        }
+
+        .player-info-bar {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .gold-txt { color: var(--gold); }
+
+        .screen {
+            display: none;
+            padding: 25px;
+            flex-grow: 1;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Start Screen */
+        .title {
+            color: var(--dark);
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-light);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .btn-gold:hover {
+            background: #e0a100;
+        }
+
+        /* Map / Level Select */
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 700px;
+            margin: 20px 0;
+        }
+
+        .level-node {
+            aspect-ratio: 1;
+            background: #e9ecef;
+            border: 3px solid #adb5bd;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .level-node.unlocked {
+            background: var(--accent);
+            border-color: var(--primary-light);
+            color: var(--dark);
+        }
+
+        .level-node.completed {
+            background: var(--gold);
+            border-color: #d4a373;
+            color: #000;
+        }
+
+        .level-node.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .level-node:hover:not(.locked) {
+            transform: scale(1.1);
+        }
+
+        /* Question Screen */
+        .q-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .badge-hots {
+            background: #e63946;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .badge-solo {
+            background: #457b9d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .question-box {
+            background: #f1f8f5;
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .vocab-info {
+            margin-top: 8px;
+            font-size: 13px;
+            background: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px dashed #b7e4c7;
+        }
+
+        .audio-btn {
+            background: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        /* MCQ Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #e9ecef;
+            border-color: var(--primary-light);
+        }
+
+        /* Drag and Match Screen */
+        .drag-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .drag-column {
+            width: 48%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .draggable-item {
+            background: var(--accent);
+            border: 2px dashed var(--primary);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: grab;
+            font-weight: 600;
+        }
+
+        .dropzone-item {
+            background: #f8f9fa;
+            border: 2px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropzone-target {
+            border: 2px dashed #999;
+            min-width: 120px;
+            height: 30px;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        /* Dashboard */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .dashboard-table th, .dashboard-table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .dashboard-table th {
+            background: var(--dark);
+            color: white;
+        }
+
+        .dashboard-table tr:nth-child(even) { background: #f2f2f2; }
+
+        .modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-content: 10;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .map-grid { grid-template-columns: repeat(3, 1fr); }
+            .options-grid { grid-template-columns: 1fr; }
+            .drag-container { flex-direction: column; }
+            .drag-column { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <header>
+        <div class="player-info-bar" id="headerInfo">
+            🏴‍☠️ Perburuan Harta Karun Bahasa Inggris
+        </div>
+        <div class="stats-bar" id="statsBar" style="display: none;">
+            <div class="stat-box">⭐ Skor: <span id="scoreVal" class="gold-txt">0</span></div>
+            <div class="stat-box">🗺️ Level: <span id="levelVal">1</span>/10</div>
+        </div>
+    </header>
+
+    <!-- SCREEN 1: REGISTER -->
+    <div id="screenRegister" class="screen active">
+        <h1 class="title">🏴‍☠️ Treasure Hunt: My Family Time</h1>
+        <p class="subtitle">Chapter 3 - Bahasa Inggris Kelas 3 SD/MI</p>
+        <div class="form-group">
+            <label for="studentName">Nama Lengkap Siswa:</label>
+            <input type="text" id="studentName" class="form-control" placeholder="Contoh: Budi Santoso">
+        </div>
+        <div class="form-group">
+            <label for="schoolName">Nama Sekolah / Madrasah:</label>
+            <input type="text" id="schoolName" class="form-control" placeholder="Contoh: SD Nusantara 01">
+        </div>
+        <button class="btn btn-gold" onclick="registerStudent()">Mulai Petualangan! 🗺️</button>
+        <button class="btn" style="background:#457b9d; margin-top:10px;" onclick="showTeacherDashboard()">Dashboard Guru 📊</button>
+    </div>
+
+    <!-- SCREEN 2: LEVEL MAP -->
+    <div id="screenMap" class="screen">
+        <h2 class="title">Peta Harta Karun</h2>
+        <p>Pilih level yang terbuka untuk melanjutkan pencarian!</p>
+        <div class="map-grid" id="mapGrid"></div>
+        <button class="btn" onclick="showScreen('screenRegister')">Kembali</button>
+    </div>
+
+    <!-- SCREEN 3: QUIZ QUESTION -->
+    <div id="screenQuiz" class="screen">
+        <div class="q-header">
+            <span>Soal <span id="qIndex">1</span>/10</span>
+            <span id="qBadge"></span>
+        </div>
+        <div class="question-box">
+            <div class="question-text" id="qText">Question goes here...</div>
+            <div class="vocab-info" id="vocabInfo">
+                🔊 <b>Cara Pengucapan:</b> <span id="phoneticTxt">-</span> 
+                <button class="audio-btn" onclick="speakVocab()">🔊 Dengar</button><br>
+                🇮🇩 <b>Arti Bahasa Indonesia:</b> <span id="indoTxt">-</span>
+            </div>
+        </div>
+        <div class="options-grid" id="optionsGrid"></div>
+        <button class="btn" style="background:#6c757d;" onclick="showScreen('screenMap')">Nanti Dulu / Peta</button>
+    </div>
+
+    <!-- SCREEN 4: DRAG & MATCH QUESTION -->
+    <div id="screenDrag" class="screen">
+        <div class="q-header">
+            <span>Level Match & Drag</span>
+            <span class="badge-solo">SOLO: Relational</span>
+        </div>
+        <p style="margin-bottom: 15px; font-weight:600;">Jodohkanlah Kosakata/Kalimat Kegiatan di Kiri dengan Gambar/Arti yang Tepat di Kanan!</p>
+        
+        <div class="drag-container">
+            <div class="drag-column" id="dragItems"></div>
+            <div class="drag-column" id="dropTargets"></div>
+        </div>
+
+        <button class="btn btn-gold" onclick="checkDragMatch()">Periksa Jawaban 🔍</button>
+    </div>
+
+    <!-- SCREEN 5: LEVEL COMPLETE -->
+    <div id="screenComplete" class="screen">
+        <h1 class="title">🎉 Selamat! Level Selesai!</h1>
+        <p class="subtitle" id="completeMsg">Kamu menemukan peti harta karun!</p>
+        <div style="font-size: 50px; margin: 20px 0;">💎🪙📜</div>
+        <p>Skor Kamu di level ini: <b id="levelScoreVal">0</b></p>
+        <button class="btn btn-gold" onclick="nextLevelOrMap()">Lanjut ke Peta 🗺️</button>
+    </div>
+
+    <!-- SCREEN 6: TEACHER DASHBOARD -->
+    <div id="screenDashboard" class="screen">
+        <h1 class="title">📊 Dashboard Rekapitulasi Guru</h1>
+        <p class="subtitle">Hasil Skor dan Progress Siswa dalam Game Harta Karun</p>
+        
+        <div style="width:100%; overflow-x:auto;">
+            <table class="dashboard-table" id="summaryTable">
+                <thead>
+                    <tr>
+                        <th>Nama Siswa</th>
+                        <th>Sekolah</th>
+                        <th>Level Terakhir</th>
+                        <th>Total Skor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="summaryTableBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button class="btn btn-gold" onclick="downloadCSV()">Download Laporan (.CSV) 📥</button>
+            <button class="btn" onclick="showScreen('screenRegister')">Kembali ke Menu Utama</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- GAME STATE ---
+let player = {
+    name: "",
+    school: "",
+    currentLevel: 1,
+    unlockedLevel: 1,
+    score: 0,
+    levelScores: {}
+};
+
+let currentQIndex = 0;
+let currentLevelQuestions = [];
+let dragPairs = [];
+
+// --- QUESTION BANK (CHAPTER 3: MY FAMILY TIME - 10 LEVELS x 10 QUESTIONS) ---
+// Taxonomy SOLO Levels: Pre-structural, Unistructural, Multistructural, Relational, Extended Abstract (HOTS)
+const questionBank = {
+    1: [ // Unit 1 Intro: Activities at Home
+        { q: "What is the meaning of 'sweeping the floor'?", options: ["Menyapu lantai", "Mengepel lantai", "Mencuci piring", "Membuat tempat tidur"], ans: 0, speak: "sweeping the floor", indo: "Menyapu lantai", solo: "Unistructural" },
+        { q: "What is the meaning of 'mopping the floor'?", options: ["Membuat tempat tidur", "Mengepel lantai", "Berkebun", "Memasak"], ans: 1, speak: "mopping the floor", indo: "Mengepel lantai", solo: "Unistructural" },
+        { q: "What is the meaning of 'washing the dishes'?", options: ["Mencuci baju", "Menyapu lantai", "Mencuci piring", "Memasak"], ans: 2, speak: "washing the dishes", indo: "Mencuci piring", solo: "Unistructural" },
+        { q: "What is the meaning of 'making the bed'?", options: ["Merapikan tempat tidur", "Mencuci piring", "Berkebun", "Menyapu"], ans: 0, speak: "making the bed", indo: "Merapikan tempat tidur", solo: "Unistructural" },
+        { q: "What is the meaning of 'gardening'?", options: ["Memasak", "Berkebun", "Mengepel", "Mencuci baju"], ans: 1, speak: "gardening", indo: "Berkebun", solo: "Unistructural" },
+        { q: "Complete the sentence: 'I am _____ the floor.' (Menyapu)", options: ["sweeping", "mopping", "washing", "cooking"], ans: 0, speak: "I am sweeping the floor", indo: "Saya sedang menyapu lantai", solo: "Multistructural" },
+        { q: "Complete the sentence: 'Emak is _____ the dishes.' (Mencuci piring)", options: ["gardening", "sweeping", "washing", "making"], ans: 2, speak: "Emak is washing the dishes", indo: "Ibu sedang mencuci piring", solo: "Multistructural" },
+        { q: "Bapak is _____. (Berkebun)", options: ["gardening", "mopping", "cooking", "sweeping"], ans: 0, speak: "Bapak is gardening", indo: "Ayah sedang berkebun", solo: "Multistructural" },
+        { q: "Putri is _____ the bed. (Merapikan)", options: ["sweeping", "making", "washing", "mopping"], ans: 1, speak: "Putri is making the bed", indo: "Putri sedang merapikan tempat tidur", solo: "Multistructural" },
+        { q: "Pipit is _____ the floor. (Mengepel)", options: ["mopping", "cooking", "gardening", "washing"], ans: 0, speak: "Pipit is mopping the floor", indo: "Pipit sedang mengepel lantai", solo: "Multistructural" }
+    ],
+    2: [ // Pronouns & Present Continuous
+        { q: "What is 'he' in Bahasa Indonesia?", options: ["Dia (Laki-laki)", "Dia (Perempuan)", "Mereka", "Kita"], ans: 0, speak: "he", indo: "Dia (Laki-laki)", solo: "Unistructural" },
+        { q: "What is 'she' in Bahasa Indonesia?", options: ["Dia (Perempuan)", "Dia (Laki-laki)", "Saya", "Kamu"], ans: 0, speak: "she", indo: "Dia (Perempuan)", solo: "Unistructural" },
+        { q: "What is 'they' in Bahasa Indonesia?", options: ["Kami", "Mereka", "Dia", "Kamu"], ans: 1, speak: "they", indo: "Mereka", solo: "Unistructural" },
+        { q: "Complete: 'What _____ you doing?'", options: ["is", "are", "am", "do"], ans: 1, speak: "What are you doing?", indo: "Apa yang sedang kamu lakukan?", solo: "Multistructural" },
+        { q: "Complete: 'What _____ she doing?'", options: ["are", "is", "am", "where"], ans: 1, speak: "What is she doing?", indo: "Apa yang sedang dia (perempuan) lakukan?", solo: "Multistructural" },
+        { q: "Complete: 'What _____ Bapak doing?'", options: ["is", "are", "am", "do"], ans: 0, speak: "What is Bapak doing?", indo: "Apa yang sedang Ayah lakukan?", solo: "Multistructural" },
+        { q: "Response for 'What are you doing?': 'I _____ sweeping.'", options: ["is", "am", "are", "be"], ans: 1, speak: "I am sweeping", indo: "Saya sedang menyapu", solo: "Multistructural" },
+        { q: "Response for 'What are they doing?': 'They _____ gardening.'", options: ["is", "am", "are", "was"], ans: 2, speak: "They are gardening", indo: "Mereka sedang berkebun", solo: "Multistructural" },
+        { q: "Putra and Putri are brothers. 'They _____ making the bed.'", options: ["am", "is", "are", "do"], ans: 2, speak: "They are making the bed", indo: "Mereka sedang merapikan tempat tidur", solo: "Relational" },
+        { q: "Arti dari 'We are cooking' adalah...", options: ["Kami sedang memasak", "Dia sedang memasak", "Saya sedang menyapu", "Mereka sedang mengepel"], ans: 0, speak: "We are cooking", indo: "Kami/Kita sedang memasak", solo: "Multistructural" }
+    ],
+    3: [ // Unit 2 Intro: Parts of the House
+        { q: "What is 'living room'?", options: ["Dapur", "Kamar tidur", "Ruang tamu", "Kamar mandi"], ans: 2, speak: "living room", indo: "Ruang tamu / Ruang keluarga", solo: "Unistructural" },
+        { q: "What is 'bedroom'?", options: ["Kamar tidur", "Dapur", "Halaman belakang", "Kebun"], ans: 0, speak: "bedroom", indo: "Kamar tidur", solo: "Unistructural" },
+        { q: "What is 'kitchen'?", options: ["Dapur", "Kamar mandi", "Teras", "Kamar tidur"], ans: 0, speak: "kitchen", indo: "Dapur", solo: "Unistructural" },
+        { q: "What is 'bathroom'?", options: ["Kamar mandi", "Dapur", "Ruang tamu", "Kebun"], ans: 0, speak: "bathroom", indo: "Kamar mandi", solo: "Unistructural" },
+        { q: "What is 'backyard'?", options: ["Halaman belakang", "Kamar mandi", "Dapur", "Kamar tidur"], ans: 0, speak: "backyard", indo: "Halaman belakang", solo: "Unistructural" },
+        { q: "What is 'garden'?", options: ["Taman / Kebun", "Kamar tidur", "Ruang tamu", "Dapur"], ans: 0, speak: "garden", indo: "Taman / Kebun", solo: "Unistructural" },
+        { q: "Where do you sleep? In the _____.", options: ["bedroom", "kitchen", "bathroom", "garden"], ans: 0, speak: "In the bedroom", indo: "Di kamar tidur", solo: "Relational" },
+        { q: "Where does Emak cook? In the _____.", options: ["kitchen", "living room", "bedroom", "backyard"], ans: 0, speak: "In the kitchen", indo: "Di dapur", solo: "Relational" },
+        { q: "Where do you take a bath? In the _____.", options: ["bathroom", "garden", "kitchen", "bedroom"], ans: 0, speak: "In the bathroom", indo: "Di kamar mandi", solo: "Relational" },
+        { q: "Where is Bapak gardening? In the _____.", options: ["garden", "bedroom", "kitchen", "bathroom"], ans: 0, speak: "In the garden", indo: "Di kebun", solo: "Relational" }
+    ],
+    4: [ // Expressions: Where are you?
+        { q: "Translating: 'Where are you?'", options: ["Di mana kamu?", "Apa yang kamu lakukan?", "Siapa nama kamu?", "Ke mana kamu pergi?"], ans: 0, speak: "Where are you?", indo: "Di mana kamu?", solo: "Unistructural" },
+        { q: "Translating: 'Where is your sister?'", options: ["Di mana saudara perempuanmu?", "Apa yang dilakukan adikmu?", "Siapa adikmu?", "Bagaimana adikmu?"], ans: 0, speak: "Where is your sister?", indo: "Di mana saudara perempuanmu?", solo: "Unistructural" },
+        { q: "Answer: 'Where are you?' -> 'I am _____ the kitchen.'", options: ["in", "on", "at", "under"], ans: 0, speak: "I am in the kitchen", indo: "Saya ada di dapur", solo: "Multistructural" },
+        { q: "Answer: 'Where is Bapak?' -> 'He is _____ the backyard.'", options: ["in", "on", "to", "by"], ans: 0, speak: "He is in the backyard", indo: "Dia ada di halaman belakang", solo: "Multistructural" },
+        { q: "Complete: 'Putri is in the _____ room.'", options: ["living", "kitchen", "mopping", "sweeping"], ans: 0, speak: "living room", indo: "Ruang tamu", solo: "Multistructural" },
+        { q: "Jika Emak berada di kamar tidur, kalimat bahasa Inggrisnya:", options: ["Emak is in the bedroom.", "Emak is in the kitchen.", "Emak is in the garden.", "Emak is in the bathroom."], ans: 0, speak: "Emak is in the bedroom", indo: "Emak ada di kamar tidur", solo: "Multistructural" },
+        { q: "Jika Bapak berada di halaman belakang, kalimat bahasa Inggrisnya:", options: ["Bapak is in the backyard.", "Bapak is in the living room.", "Bapak is in the kitchen.", "Bapak is in the bedroom."], ans: 0, speak: "Bapak is in the backyard", indo: "Bapak ada di halaman belakang", solo: "Multistructural" },
+        { q: "Mita: 'Where is Pipit?' -> Answer: '_____ is in the kitchen.'", options: ["She", "He", "They", "We"], ans: 0, speak: "She is in the kitchen", indo: "Dia (Pipit) ada di dapur", solo: "Relational" },
+        { q: "Mita: 'Where are Putra and Putri?' -> Answer: '_____ are in the bedroom.'", options: ["They", "She", "He", "It"], ans: 0, speak: "They are in the bedroom", indo: "Mereka ada di kamar tidur", solo: "Relational" },
+        { q: "Apa arti dari 'I am on the terrace'?", options: ["Saya ada di teras", "Saya ada di dapur", "Saya ada di kebun", "Saya ada di kamar mandi"], ans: 0, speak: "I am on the terrace", indo: "Saya ada di teras", solo: "Unistructural" }
+    ],
+    5: [ // Story Time & Reading Comprehension (Comic Strip 3.1 & 3.2)
+        { q: "In Comic Strip 3.1, who comes to Pipit's house?", options: ["Mita", "Putri", "Emak", "Guru"], ans: 0, speak: "Mita comes to Pipit's house", indo: "Mita datang ke rumah Pipit", solo: "Unistructural" },
+        { q: "What is Pipit's family having on that day?", options: ["Cleaning day", "Cooking day", "Shopping day", "Birthday party"], ans: 0, speak: "Cleaning day", indo: "Hari bersih-bersih", solo: "Relational" },
+        { q: "What is Pipit doing when Mita comes?", options: ["Sweeping the floor", "Mopping the floor", "Cooking", "Gardening"], ans: 0, speak: "Sweeping the floor", indo: "Menyapu lantai", solo: "Multistructural" },
+        { q: "What is Emak doing in the kitchen?", options: ["Washing the dishes", "Sweeping", "Gardening", "Sleeping"], ans: 0, speak: "Washing the dishes", indo: "Mencuci piring", solo: "Multistructural" },
+        { q: "What is Bapak doing during cleaning day?", options: ["Mopping the floor", "Cooking", "Watching TV", "Sleeping"], ans: 0, speak: "Mopping the floor", indo: "Mengepel lantai", solo: "Multistructural" },
+        { q: "What are Pipit's little brother and sister doing?", options: ["Making the bed", "Gardening", "Washing clothes", "Eating"], ans: 0, speak: "Making the bed", indo: "Merapikan tempat tidur", solo: "Multistructural" },
+        { q: "What does Mita say when she sees Pipit's brother and sister?", options: ["Wow. So diligent.", "Good bye.", "I am sorry.", "No problem."], ans: 0, speak: "Wow. So diligent.", indo: "Wah. Rajin sekali.", solo: "Relational" },
+        { q: "In Comic Strip 3.2, what does Bapak clarify when Emak thinks he is drinking coffee?", options: ["No, I am not. I am gardening.", "Yes, I am.", "I am sleeping.", "I am cooking."], ans: 0, speak: "No, I am not. I am gardening.", indo: "Tidak, saya sedang berkebun.", solo: "Relational" },
+        { q: "Where is Bapak gardening?", options: ["In the garden / backyard", "In the bedroom", "In the kitchen", "In the living room"], ans: 0, speak: "In the garden", indo: "Di kebun / halaman belakang", solo: "Multistructural" },
+        { q: "Where are Pipit's brother and sister in Comic 3.2?", options: ["In the bedroom", "In the kitchen", "In the terrace", "In the bathroom"], ans: 0, speak: "In the bedroom", indo: "Di kamar tidur", solo: "Multistructural" }
+    ],
+    6: [ // Grammar Integration: Matching Activity + Place
+        { q: "Choose the correct pair: 'Kitchen' is for...", options: ["Washing dishes / Cooking", "Sleeping", "Gardening", "Mopping lawn"], ans: 0, speak: "Kitchen is for cooking", indo: "Dapur untuk memasak/cuci piring", solo: "Relational" },
+        { q: "Choose the correct pair: 'Bedroom' is for...", options: ["Making the bed / Sleeping", "Washing dishes", "Gardening", "Car washing"], ans: 0, speak: "Bedroom is for making the bed", indo: "Kamar tidur untuk merapikan tempat tidur", solo: "Relational" },
+        { q: "Choose the correct pair: 'Garden' is for...", options: ["Gardening", "Washing dishes", "Mopping bedroom", "Sleeping"], ans: 0, speak: "Garden is for gardening", indo: "Kebun untuk berkebun", solo: "Relational" },
+        { q: "Where do you mop the floor?", options: ["In the living room / rooms", "In the garden", "Inside the stove", "Outside sky"], ans: 0, speak: "In the living room", indo: "Di ruang tamu / ruangan", solo: "Relational" },
+        { q: "Fill in: 'They are _____ the dishes in the kitchen.'", options: ["washing", "sweeping", "making", "gardening"], ans: 0, speak: "washing the dishes", indo: "mencuci piring", solo: "Multistructural" },
+        { q: "Fill in: 'He is _____ the floor in the living room.'", options: ["sweeping", "cooking", "gardening", "drinking"], ans: 0, speak: "sweeping the floor", indo: "menyapu lantai", solo: "Multistructural" },
+        { q: "Sentence structure check: Which one is correct?", options: ["She is in the bedroom.", "She in is bedroom the.", "Bedroom is in she.", "Is she bedroom in."], ans: 0, speak: "She is in the bedroom", indo: "Dia ada di kamar tidur", solo: "Relational" },
+        { q: "Sentence structure check: Which one is correct?", options: ["I am sweeping the floor.", "I sweeping am floor the.", "Floor am sweeping I.", "Sweeping I am floor."], ans: 0, speak: "I am sweeping the floor", indo: "Saya sedang menyapu lantai", solo: "Relational" },
+        { q: "What is the English of 'Ayah sedang berkebun di halaman belakang'?", options: ["Bapak is gardening in the backyard.", "Bapak is sleeping in the kitchen.", "Bapak is cooking in the bedroom.", "Bapak is mopping in the bathroom."], ans: 0, speak: "Bapak is gardening in the backyard", indo: "Ayah sedang berkebun di halaman belakang", solo: "Relational" },
+        { q: "What is the English of 'Saya sedang mengepel lantai di ruang tamu'?", options: ["I am mopping the floor in the living room.", "I am sweeping the kitchen.", "I am making the bed in garden.", "I am washing dishes in bedroom."], ans: 0, speak: "I am mopping the floor in the living room", indo: "Saya sedang mengepel lantai di ruang tamu", solo: "Relational" }
+    ],
+    7: [ // Critical Thinking & Logic (Connecting Actions to Places)
+        { q: "If Pipit holds a broom, what activity is she doing?", options: ["Sweeping the floor", "Mopping the floor", "Washing dishes", "Gardening"], ans: 0, speak: "Sweeping the floor", indo: "Menyapu lantai (memegang sapu)", solo: "Relational" },
+        { q: "If Bapak holds a mop and a bucket of water, what is he doing?", options: ["Mopping the floor", "Gardening", "Making the bed", "Cooking"], ans: 0, speak: "Mopping the floor", indo: "Mengepel lantai (memegang pel & ember)", solo: "Relational" },
+        { q: "If Emak is using water and soap at the sink, what is she doing?", options: ["Washing the dishes", "Sweeping the floor", "Making the bed", "Gardening"], ans: 0, speak: "Washing the dishes", indo: "Mencuci piring (menggunakan air & sabun di wastafel)", solo: "Relational" },
+        { q: "If Putra is arranging pillows and blankets, what is he doing?", options: ["Making the bed", "Washing clothes", "Mopping", "Gardening"], ans: 0, speak: "Making the bed", indo: "Merapikan tempat tidur (merapikan bantal & selimut)", solo: "Relational" },
+        { q: "If Bapak is holding a shovel and watering plants, where is he?", options: ["In the garden", "In the kitchen", "In the bedroom", "In the bathroom"], ans: 0, speak: "In the garden", indo: "Di kebun (memegang sekop & menyiram tanaman)", solo: "Relational" },
+        { q: "Why do we wash dishes in the kitchen instead of the bedroom?", options: ["Because the kitchen has water and sink for dishes", "Because bedroom is for cooking", "Because garden is dirty", "No reason"], ans: 0, speak: "Because kitchen has sink for dishes", indo: "Karena dapur memiliki wastafel & air", solo: "Extended Abstract" },
+        { q: "Find the odd one out (Manakah yang berbeda?):", options: ["Bedroom", "Living room", "Kitchen", "Sweeping"], ans: 3, speak: "Sweeping is an activity, others are room parts", indo: "Sweeping adalah kegiatan, yang lain adalah ruangan", solo: "Extended Abstract" },
+        { q: "Find the odd one out:", options: ["Mopping", "Washing dishes", "Gardening", "Bathroom"], ans: 3, speak: "Bathroom is a place, others are activities", indo: "Bathroom adalah tempat, yang lain adalah kegiatan", solo: "Extended Abstract" },
+        { q: "Pipit wants to sleep. Where should she go?", options: ["Bedroom", "Kitchen", "Garden", "Backyard"], ans: 0, speak: "Bedroom", indo: "Kamar tidur", solo: "Relational" },
+        { q: "Emak wants to plant flowers. Where should she go?", options: ["Garden", "Bathroom", "Living room", "Bedroom"], ans: 0, speak: "Garden", indo: "Kebun", solo: "Relational" }
+    ],
+    8: [ // Drag and Match Concept Level (Interactive Check)
+        { q: "Special Interactive Level! Complete the Drag & Match module.", options: ["Start Drag & Match", "Skip", "Info", "Help"], ans: 0, speak: "Drag and match", indo: "Pasangkan kata dengan arti!", solo: "Relational" }
+    ],
+    9: [ // Advanced Relational & Contextual Scenarios
+        { q: "Scenario: The floor is dirty with dust. What should you do?", options: ["I am sweeping the floor.", "I am making the bed.", "I am washing dishes.", "I am gardening."], ans: 0, speak: "I am sweeping the floor", indo: "Menyapu lantai karena berdebu", solo: "Extended Abstract" },
+        { q: "Scenario: The blanket is messy after sleeping. What should you do?", options: ["I am making the bed.", "I am mopping floor.", "I am cooking.", "I am in the garden."], ans: 0, speak: "I am making the bed", indo: "Merapikan tempat tidur yang berantakan", solo: "Extended Abstract" },
+        { q: "Scenario: Plates and glasses are dirty after lunch. What should Emak do?", options: ["She is washing the dishes.", "She is sweeping floor.", "She is gardening.", "She is sleeping."], ans: 0, speak: "She is washing the dishes", indo: "Mencuci piring kotor setelah makan siang", solo: "Extended Abstract" },
+        { q: "Scenario: The plants need water in the morning. What is Bapak doing?", options: ["He is gardening in the garden.", "He is mopping in kitchen.", "He is sleeping in living room.", "He is sweeping bedroom."], ans: 0, speak: "He is gardening in the garden", indo: "Berkebun menyiram tanaman di pagi hari", solo: "Extended Abstract" },
+        { q: "Which expression is appropriate when welcoming a guest at home?", options: ["Welcome to my home!", "Go away!", "Where is my broom?", "I am mopping!"], ans: 0, speak: "Welcome to my home!", indo: "Selamat datang di rumah saya!", solo: "Relational" },
+        { q: "If someone asks 'What are you doing?', you should answer with your...", options: ["Current activity (Action)", "Name", "Age", "School"], ans: 0, speak: "Current activity", indo: "Kegiatan yang sedang dilakukan", solo: "Relational" },
+        { q: "If someone asks 'Where are you?', you should answer with your...", options: ["Location / Room", "Activity", "Hobby", "Favorite food"], ans: 0, speak: "Location or room", indo: "Lokasi / Ruangan tempat berada", solo: "Relational" },
+        { q: "True or False: 'We mopping the floor' is a grammatically correct sentence.", options: ["False (Should be: We are mopping)", "True", "I don't know", "Both correct"], ans: 0, speak: "We are mopping the floor", indo: "Salah, harusnya ada 'are'", solo: "Extended Abstract" },
+        { q: "True or False: 'She is in the kitchen' means 'Dia ada di dapur'.", options: ["True", "False", "Wrong concept", "None"], ans: 0, speak: "True", indo: "Benar", solo: "Relational" },
+        { q: "Correct the sentence: 'He am gardening in garden.'", options: ["He is gardening in the garden.", "He are gardening.", "He cooking in garden.", "He sweep in garden."], ans: 0, speak: "He is gardening in the garden", indo: "Dia (laki-laki) sedang berkebun di kebun", solo: "Extended Abstract" }
+    ],
+    10: [ // LEVEL 10: HOTS (Higher Order Thinking Skills) & SOLO Extended Abstract
+        { q: "🔥 [HOTS - Analysis] Look at Pipit's family house routine: 'Every Sunday, Pipit sweeps, Bapak mops, Emak washes dishes.' Why is family cooperation important at home?", options: ["Because it makes house cleaning faster, easier, and builds togetherness.", "Because only children should clean.", "Because Bapak does not like cooking.", "Because Emak is tired."], ans: 0, speak: "Cooperation builds togetherness and makes cleaning easier", indo: "Kerja sama mempercepat pekerjaan dan mempererat kebersamaan", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Synthesize] Pipit is in the kitchen sweeping, while Emak is washing dishes in the kitchen. What can you infer about their location?", options: ["They are working together in the same room (kitchen).", "They are in different houses.", "Pipit is outside the house.", "Bapak is sleeping."], ans: 0, speak: "They are in the same room", indo: "Mereka berada di ruangan yang sama (dapur)", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Evaluate] Putra is playing games in his bedroom while the floor is wet and dirty. What SHOULD Putra do based on 'Family Time' values?", options: ["He should help sweep or mop his bedroom first.", "He should ignore it.", "He should ask Emak to do everything.", "He should go to garden."], ans: 0, speak: "He should help clean his room", indo: "Dia sebaiknya membantu menyapu/mengepel kamarnya terlebih dahulu", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Problem Solving] Water spilled on the kitchen floor while washing dishes. Which two actions are needed in order?", options: ["First sweep dust, then mop the water spill.", "First garden, then sleep.", "First make bed, then wash dishes.", "First eat, then sweep."], ans: 0, speak: "First sweep dust, then mop water spill", indo: "Pertama sapu debu, lalu pel tumpahan air", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Compare] What is the structural difference between 'I am in the bedroom' and 'I am making the bed in the bedroom'?", options: ["The first tells location, the second tells action AND location.", "Both tell only location.", "The first tells action.", "No difference."], ans: 0, speak: "First tells location, second tells action and location", indo: "Yang pertama menyatakan lokasi, yang kedua menyatakan kegiatan + lokasi", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Create Sentence] Construct a complete sentence combining: (Mother / cook / kitchen).", options: ["Mother is cooking in the kitchen.", "Mother kitchen cooking is.", "Cooking mother in kitchen is.", "Is mother in kitchen cook."], ans: 0, speak: "Mother is cooking in the kitchen", indo: "Ibu sedang memasak di dapur", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Critical Thinking] If someone says 'Bapak is mopping the garden', why is this statement logical/unusual?", options: ["Unusual because we usually mop tiled floors inside, not grass in garden.", "Logical because grass needs mopping.", "It is standard routine.", "None of above."], ans: 0, speak: "Unusual because we mop indoor floors, not garden grass", indo: "Tidak umum karena mengepel untuk lantai dalam rumah, bukan rumput kebun", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Application] Mita visits your home while you are cleaning. What is the polite English expression to say?", options: ["'Hello Mita! Welcome to my home. I am cleaning now.'", "'Go back home Mita!'", "'Where is your kitchen?'", "'I don't know you.'"], ans: 0, speak: "Hello Mita! Welcome to my home.", indo: "Halo Mita! Selamat datang di rumahku.", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Classification] Group these items correctly: (Sweeping, Mopping, Washing) vs (Kitchen, Bedroom, Garden).", options: ["Group 1: Home Activities | Group 2: Parts of House", "Group 1: Furniture | Group 2: People", "Group 1: Animals | Group 2: Colors", "Group 1: Food | Group 2: Drinks"], ans: 0, speak: "Group 1 activities, Group 2 parts of house", indo: "Kelompok 1: Kegiatan di Rumah | Kelompok 2: Bagian Rumah", solo: "Extended Abstract", hots: true },
+        { q: "🔥 [HOTS - Final Treasure Mastery] Summary of Chapter 3 'My Family Time': What main skills did you master?", options: ["Identifying house activities, parts of house, and describing them in English.", "Counting numbers 1-100.", "Naming wild animals in zoo.", "Singing happy birthday."], ans: 0, speak: "Identifying house activities and parts of house", indo: "Mengidentifikasi kegiatan rumah, bagian rumah, dan mendeskripsikannya", solo: "Extended Abstract", hots: true }
+    ]
+};
+
+// --- FUNCTIONS ---
+
+function registerStudent() {
+    const name = document.getElementById("studentName").value.trim();
+    const school = document.getElementById("schoolName").value.trim();
+
+    if(!name || !school) {
+        alert("Silakan isi Nama Siswa dan Nama Sekolah terlebih dahulu!");
+        return;
+    }
+
+    player.name = name;
+    player.school = school;
+
+    // Load local storage data if exists for this student
+    loadPlayerData();
+
+    document.getElementById("headerInfo").innerText = `🏴‍wrist Siswa: ${player.name} | ${player.school}`;
+    document.getElementById("statsBar").style.display = "flex";
+    
+    renderMap();
+    showScreen("screenMap");
+}
+
+function showScreen(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(screenId).classList.add("active");
+}
+
+function renderMap() {
+    const mapGrid = document.getElementById("mapGrid");
+    mapGrid.innerHTML = "";
+
+    for(let i=1; i<=10; i++) {
+        const node = document.createElement("div");
+        node.className = "level-node";
+        
+        if(i <= player.unlockedLevel) {
+            node.classList.add("unlocked");
+            if(player.levelScores[i] !== undefined) {
+                node.classList.add("completed");
+                node.innerHTML = `L${i}<br><span style="font-size:10px;">⭐${player.levelScores[i]}</span>`;
+            } else {
+                node.innerText = `L${i}`;
+            }
+            node.onclick = () => startLevel(i);
+        } else {
+            node.classList.add("locked");
+            node.innerText = `🔒 ${i}`;
+        }
+
+        mapGrid.appendChild(node);
+    }
+
+    document.getElementById("scoreVal").innerText = player.score;
+    document.getElementById("levelVal").innerText = player.currentLevel;
+}
+
+function startLevel(lvlNum) {
+    player.currentLevel = lvlNum;
+    document.getElementById("levelVal").innerText = lvlNum;
+
+    if(lvlNum === 8) {
+        // Special Drag & Match Level
+        startDragMatchLevel();
+        return;
+    }
+
+    // Standard MCQ Level
+    currentQIndex = 0;
+    currentLevelQuestions = questionBank[lvlNum] || questionBank[1];
+    showQuestion();
+    showScreen("screenQuiz");
+}
+
+function showQuestion() {
+    const qData = currentLevelQuestions[currentQIndex];
+    document.getElementById("qIndex").innerText = currentQIndex + 1;
+    document.getElementById("qText").innerText = qData.q;
+    document.getElementById("phoneticTxt").innerText = "/" + qData.speak + "/";
+    document.getElementById("indoTxt").innerText = qData.indo;
+
+    // Badge SOLO & HOTS
+    const badge = document.getElementById("qBadge");
+    let badgeHTML = `<span class="badge-solo">SOLO: ${qData.solo}</span>`;
+    if(qData.hots) {
+        badgeHTML += ` <span class="badge-hots">🔥 HOTS</span>`;
+    }
+    badge.innerHTML = badgeHTML;
+
+    // Options
+    const optGrid = document.getElementById("optionsGrid");
+    optGrid.innerHTML = "";
+
+    qData.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+        btn.onclick = () => checkAnswer(idx);
+        optGrid.appendChild(btn);
+    });
+}
+
+function speakVocab() {
+    const qData = currentLevelQuestions[currentQIndex];
+    if('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(qData.speak);
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
+    } else {
+        alert("Fitur suara pengucapan tidak didukung di browser ini.");
+    }
+}
+
+function checkAnswer(selectedIdx) {
+    const qData = currentLevelQuestions[currentQIndex];
+    if(selectedIdx === qData.ans) {
+        alert("🎉 BENAR! Bagus sekali!");
+        player.score += 10;
+    } else {
+        alert(`❌ KURANG TEPAT.\nJawaban yang benar adalah: ${qData.options[qData.ans]}`);
+    }
+
+    currentQIndex++;
+    if(currentQIndex < currentLevelQuestions.length) {
+        showQuestion();
+    } else {
+        finishLevel();
+    }
+}
+
+function startDragMatchLevel() {
+    showScreen("screenDrag");
+    const itemsContainer = document.getElementById("dragItems");
+    const targetsContainer = document.getElementById("dropTargets");
+
+    itemsContainer.innerHTML = "";
+    targetsContainer.innerHTML = "";
+
+    const rawPairs = [
+        { en: "Sweeping the floor", id: "Menyapu lantai" },
+        { en: "Mopping the floor", id: "Mengepel lantai" },
+        { en: "Washing the dishes", id: "Mencuci piring" },
+        { en: "Making the bed", id: "Merapikan tempat tidur" },
+        { en: "Living room", id: "Ruang tamu" }
+    ];
+
+    // Shuffle targets
+    const shuffledId = [...rawPairs].sort(() => Math.random() - 0.5);
+
+    rawPairs.forEach((pair, idx) => {
+        // Left Draggable
+        const dragEl = document.createElement("div");
+        dragEl.className = "draggable-item";
+        dragEl.draggable = true;
+        dragEl.id = `drag-${idx}`;
+        dragEl.innerText = pair.en;
+        dragEl.ondragstart = (e) => e.dataTransfer.setData("text", dragEl.id);
+        itemsContainer.appendChild(dragEl);
+    });
+
+    shuffledId.forEach((pair, idx) => {
+        // Right Dropzone
+        const dropZone = document.createElement("div");
+        dropZone.className = "dropzone-item";
+        dropZone.innerHTML = `<span>${pair.id}</span> <div class="dropzone-target" data-match="${pair.en}" ondragover="allowDrop(event)" ondrop="drop(event)"></div>`;
+        targetsContainer.appendChild(dropZone);
+    });
+}
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const draggedEl = document.getElementById(data);
+    if(ev.target.classList.contains("dropzone-target") && ev.target.children.length === 0) {
+        ev.target.appendChild(draggedEl);
+    }
+}
+
+function checkDragMatch() {
+    const targets = document.querySelectorAll(".dropzone-target");
+    let correctCount = 0;
+
+    targets.forEach(t => {
+        const expected = t.getAttribute("data-match");
+        if(t.children.length > 0) {
+            const actual = t.children[0].innerText.trim();
+            if(actual === expected) {
+                correctCount++;
+            }
+        }
+    });
+
+    if(correctCount === 5) {
+        alert("🎉 FANTASTIS! Semua pasangan Drag & Match Benar!");
+        player.score += 100;
+        finishLevel();
+    } else {
+        alert(`Jawaban benar: ${correctCount}/5. Silakan coba pasangkan kembali dengan tepat!`);
+    }
+}
+
+function finishLevel() {
+    const lvl = player.currentLevel;
+    player.levelScores[lvl] = 100;
+
+    if(player.unlockedLevel === lvl && lvl < 10) {
+        player.unlockedLevel = lvl + 1;
+    }
+
+    savePlayerData();
+
+    document.getElementById("levelScoreVal").innerText = player.levelScores[lvl];
+    showScreen("screenComplete");
+}
+
+function nextLevelOrMap() {
+    renderMap();
+    showScreen("screenMap");
+}
+
+// --- LOCAL STORAGE & DASHBOARD ---
+
+function savePlayerData() {
+    let records = JSON.parse(localStorage.getItem("th_records") || "[]");
+    const existingIdx = records.findIndex(r => r.name === player.name && r.school === player.school);
+    
+    const dataObj = {
+        name: player.name,
+        school: player.school,
+        unlockedLevel: player.unlockedLevel,
+        score: player.score,
+        status: player.unlockedLevel > 10 ? "Tamat 🏆" : `Level ${player.unlockedLevel}`
+    };
+
+    if(existingIdx >= 0) {
+        records[existingIdx] = dataObj;
+    } else {
+        records.push(dataObj);
+    }
+
+    localStorage.setItem("th_records", JSON.stringify(records));
+}
+
+function loadPlayerData() {
+    let records = JSON.parse(localStorage.getItem("th_records") || "[]");
+    const existing = records.find(r => r.name === player.name && r.school === player.school);
+
+    if(existing) {
+        player.unlockedLevel = existing.unlockedLevel;
+        player.score = existing.score;
+    }
+}
+
+function showTeacherDashboard() {
+    showScreen("screenDashboard");
+    const tbody = document.getElementById("summaryTableBody");
+    tbody.innerHTML = "";
+
+    let records = JSON.parse(localStorage.getItem("th_records") || "[]");
+
+    if(records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5">Belum ada data hasil siswa.</td></tr>`;
+        return;
+    }
+
+    records.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td><b>${r.name}</b></td>
+            <td>${r.school}</td>
+            <td>Level ${r.unlockedLevel}</td>
+            <td><b class="gold-txt">${r.score}</b></td>
+            <td>${r.status}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function downloadCSV() {
+    let records = JSON.parse(localStorage.getItem("th_records") || "[]");
+    if(records.length === 0) {
+        alert("Tidak ada data untuk diunduh!");
+        return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,Nama Siswa,Sekolah,Level Terakhir,Total Skor,Status\\n";
+    records.forEach(r => {
+        csvContent += `"${r.name}","${r.school}","${r.unlockedLevel}","${r.score}","${r.status}"\\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Rekap_Nilai_Treasure_Hunt_Chapter3.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+
+</body>
+</html>
