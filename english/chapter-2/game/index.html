@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Quest: Chapter 2 - My Family</title>
+    <style>
+        :root {
+            --primary: #4e54c8;
+            --secondary: #8f94fb;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            min-height: 600px;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        h1, h2, h3 {
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: #3b4099;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary { background: #7f8c8d; }
+        .btn-secondary:hover { background: #95a5a6; }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #27ae60; }
+        .btn-warning { background: var(--warning); color: var(--dark); }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .grid-levels {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .level-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .level-card:hover:not(.locked) {
+            border-color: var(--primary);
+            background: #eef0ff;
+            transform: scale(1.05);
+        }
+
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #e9ecef;
+        }
+
+        .level-card.completed {
+            border-color: var(--success);
+            background: #e8f8f0;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+        }
+
+        .quiz-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #cbd5e1;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #f1f5f9;
+        }
+
+        .option-btn.correct {
+            background: #dcfce7;
+            border-color: var(--success);
+            color: #166534;
+        }
+
+        .option-btn.wrong {
+            background: #fee2e2;
+            border-color: var(--danger);
+            color: #991b1b;
+        }
+
+        .audio-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .badge-solo { background: #8e44ad; }
+        .badge-hots { background: #d35400; }
+
+        .vocab-table, .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .vocab-table th, .vocab-table td,
+        .dashboard-table th, .dashboard-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .vocab-table th, .dashboard-table th {
+            background: #f1f5f9;
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .tab-menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- SCREEN 1: FORM SISWA -->
+    <div id="screen-login" class="screen active">
+        <h1>English Quest: Chapter 2</h1>
+        <h3>My Family & Origins</h3>
+        <p style="text-align: center; color: #64748b;">Aplikasi Pembelajaran Interaktif SD Kelas III</p>
+        
+        <form id="form-identity" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <div class="form-group">
+                <label for="student-name">Nama Lengkap Siswa:</label>
+                <input type="text" id="student-name" placeholder="Masukkan nama siswa..." required>
+            </div>
+            <div class="form-group">
+                <label for="school-name">Nama Sekolah / SD:</label>
+                <input type="text" id="school-name" placeholder="Contoh: SDN 1 Merdeka" required>
+            </div>
+            <button type="submit" class="btn btn-success" style="margin-top: 10px;">Mulai Petualangan 🚀</button>
+        </form>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+            <button class="btn btn-secondary" onclick="showScreen('screen-vocab')">📖 Glosarium & Fitur Suara</button>
+            <button class="btn btn-warning" onclick="showScreen('screen-teacher')">👨‍🏫 Dashboard Guru</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: PILIH LEVEL -->
+    <div id="screen-levels" class="screen">
+        <div class="header-bar">
+            <div>
+                <h3 id="display-identity">Siswa: -</h3>
+            </div>
+            <button class="btn btn-secondary" onclick="showScreen('screen-login')">Keluar / Ganti</button>
+        </div>
+        <h2>Pilih Level Permainan</h2>
+        <div class="grid-levels" id="level-container">
+            <!-- Level 1-10 akan di-render melalui JavaScript -->
+        </div>
+        <button class="btn btn-secondary" onclick="showScreen('screen-vocab')" style="margin-top: 20px;">📖 Lihat Kamus Kosakata</button>
+    </div>
+
+    <!-- SCREEN 3: GAME / QUIZ -->
+    <div id="screen-quiz" class="screen">
+        <div class="header-bar">
+            <span id="quiz-level-title" style="font-weight: bold;">Level 1</span>
+            <span id="quiz-progress">Soal 1 / 10</span>
+            <span id="quiz-score">Skor: 0</span>
+        </div>
+
+        <div class="quiz-box">
+            <div>
+                <span id="solo-badge" class="badge badge-solo">SOLO Taxonomy</span>
+                <span id="hots-badge" class="badge badge-hots" style="display:none;">HOTS Question</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div id="question-text" class="question-text">Loading question...</div>
+                <button id="btn-audio-question" class="audio-btn" title="Dengarkan pengucapan">🔊</button>
+            </div>
+            
+            <div id="options-container" class="options-grid">
+                <!-- Pilihan Jawaban -->
+            </div>
+        </div>
+
+        <div id="explanation-box" style="display: none; background: #e0f2fe; padding: 15px; border-radius: 8px; color: #0369a1;">
+            <strong>Penjelasan Critical Thinking:</strong>
+            <p id="explanation-text"></p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+            <button class="btn btn-secondary" onclick="quitQuiz()">Quit Level</button>
+            <button id="btn-next" class="btn btn-primary" style="display: none;" onclick="nextQuestion()">Soal Berikutnya ➡️</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: GLOSARIUM & PENGUCAPAN -->
+    <div id="screen-vocab" class="screen">
+        <h2>Glosarium & Panduan Pengucapan</h2>
+        <p>Klik tombol 🔊 untuk mendengarkan pelafalan Bahasa Inggris yang benar.</p>
+        <div class="table-container">
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>Bahasa Inggris</th>
+                        <th>Cara Pengucapan (Phonetic)</th>
+                        <th>Arti (Bahasa Indonesia)</th>
+                        <th>Suara</th>
+                    </tr>
+                </thead>
+                <tbody id="vocab-body">
+                    <!-- Loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <button class="btn btn-primary" onclick="showScreen('screen-levels')">Kembali ke Level</button>
+    </div>
+
+    <!-- SCREEN 5: DASHBOARD GURU & REKAPAN -->
+    <div id="screen-teacher" class="screen">
+        <h2>Dashboard Rekapan Nilai Guru</h2>
+        <p>Rekapan seluruh nilai siswa yang tersimpan di sistem lokal browser.</p>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <button class="btn btn-success" onclick="downloadCSV()">📥 Download Laporan (CSV / Excel)</button>
+            <button class="btn btn-danger" onclick="clearData()" style="background: var(--danger);">🗑️ Hapus Semua Data</button>
+        </div>
+
+        <div class="table-container">
+            <table class="dashboard-table" id="table-results">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Nama Siswa</th>
+                        <th>Sekolah</th>
+                        <th>Level</th>
+                        <th>Skor</th>
+                        <th>Persentase</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                    <!-- Loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <button class="btn btn-primary" onclick="showScreen('screen-login')" style="margin-top: 15px;">Kembali ke Menu Utama</button>
+    </div>
+</div>
+
+<script>
+// --- DATA KOSAKATA & AUDIO ---
+const dictionary = [
+    { en: "Father", ph: "/ˈfɑː.ðər/", id: "Ayah" },
+    { en: "Mother", ph: "/ˈmʌð.ər/", id: "Ibu" },
+    { en: "Brother", ph: "/ˈbrʌð.ər/", id: "Saudara Laki-laki" },
+    { en: "Sister", ph: "/ˈsɪs.tər/", id: "Saudara Perempuan" },
+    { en: "Grandfather", ph: "/ˈɡræn.fɑː.ðər/", id: "Kakek" },
+    { en: "Grandmother", ph: "/ˈɡræn.mʌð.ər/", id: "Nenek" },
+    { en: "Twins", ph: "/twɪnz/", id: "Kembar" },
+    { en: "Little brother", ph: "/ˈlɪt.əl brʌð.ər/", id: "Adik Laki-laki" },
+    { en: "Little sister", ph: "/ˈlɪt.əl sɪs.tər/", id: "Adik Perempuan" },
+    { en: "Family", ph: "/ˈfæm.əl.i/", id: "Keluarga" },
+    { en: "Origin", ph: "/ˈɒr.ɪ.dʒɪn/", id: "Asal Usul / Asal Daerah" },
+    { en: "Where are you from?", ph: "/weər ɑːr juː frɒm/", id: "Dari mana asalmu?" }
+];
+
+// --- BANK SOAL 10 LEVEL (100 SOAL) BASED ON CHAPTER 2 ---
+// Mengintegrasikan Taksonomi SOLO & HOTS (Critical Thinking)
+const gameLevels = [
+    {
+        level: 1,
+        title: "Level 1: Unistructural (Family Basic)",
+        questions: [
+            { q: "What is the English word for 'Ayah'?", opt: ["Father", "Mother", "Sister", "Brother"], ans: 0, solo: "Unistructural", hots: false, exp: "Father berarti Ayah." },
+            { q: "What is the English word for 'Ibu'?", opt: ["Brother", "Mother", "Grandmother", "Sister"], ans: 1, solo: "Unistructural", hots: false, exp: "Mother berarti Ibu." },
+            { q: "What is the English word for 'Kakek'?", opt: ["Father", "Grandfather", "Brother", "Twins"], ans: 1, solo: "Unistructural", hots: false, exp: "Grandfather berarti Kakek." },
+            { q: "What is the English word for 'Nenek'?", opt: ["Mother", "Sister", "Grandmother", "Aunt"], ans: 2, solo: "Unistructural", hots: false, exp: "Grandmother berarti Nenek." },
+            { q: "What is the English word for 'Saudara Perempuan'?", opt: ["Sister", "Brother", "Father", "Mother"], ans: 0, solo: "Unistructural", hots: false, exp: "Sister berarti saudara perempuan." },
+            { q: "What is the English word for 'Saudara Laki-laki'?", opt: ["Sister", "Brother", "Mother", "Father"], ans: 1, solo: "Unistructural", hots: false, exp: "Brother berarti saudara laki-laki." },
+            { q: "Pak Ahmad is Pipit's father. 'Father' means...", opt: ["Paman", "Ayah", "Kakek", "Abang"], ans: 1, solo: "Unistructural", hots: false, exp: "Father bermakna Ayah." },
+            { q: "Ibu Euis is Pipit's mother. 'Mother' means...", opt: ["Ibu", "Tante", "Nenek", "Kakak"], ans: 0, solo: "Unistructural", hots: false, exp: "Mother bermakna Ibu." },
+            { q: "Putra and Putri are 'twins'. 'Twins' means...", opt: ["Teman", "Kembar", "Tetangga", "Sepupu"], ans: 1, solo: "Unistructural", hots: false, exp: "Twins artinya kembar." },
+            { q: "What does 'Family' mean in Indonesian?", opt: ["Sekolah", "Keluarga", "Rumah", "Teman"], ans: 1, solo: "Unistructural", hots: false, exp: "Family artinya Keluarga." }
+        ]
+    },
+    {
+        level: 2,
+        title: "Level 2: Multistructural (Pronouns He/She/They)",
+        questions: [
+            { q: "This is Pak Ahmad. ... is my father.", opt: ["She", "He", "They", "It"], ans: 1, kata: "He", solo: "Multistructural", hots: false, exp: "Gunakan 'He' untuk subjek laki-laki tunggal." },
+            { q: "This is Bu Euis. ... is my mother.", opt: ["He", "She", "They", "We"], ans: 1, solo: "Multistructural", hots: false, exp: "Gunakan 'She' untuk subjek perempuan tunggal." },
+            { q: "Putra and Putri are twins. ... are 5 years old.", opt: ["He", "She", "They", "It"], ans: 2, solo: "Multistructural", hots: false, exp: "Gunakan 'They' untuk subjek jamak (lebih dari satu orang)." },
+            { q: "Who is ...? She is my sister.", opt: ["he", "she", "they", "you"], ans: 1, solo: "Multistructural", hots: false, exp: "Subjek pertanyaan disesuaikan dengan kata ganti 'she'." },
+            { q: "Who is ...? He is my grandfather.", opt: ["she", "he", "they", "I"], ans: 1, solo: "Multistructural", hots: false, exp: "Grandfather adalah laki-laki, maka gunakan 'he'." },
+            { q: "Who are ...? They are my brother and sister.", opt: ["she", "he", "they", "it"], ans: 2, solo: "Multistructural", hots: false, exp: "Subjek jamak menggunakan 'they'." },
+            { q: "Bara is a boy. ... is 9 years old.", opt: ["She", "He", "They", "We"], ans: 1, solo: "Multistructural", hots: false, exp: "Anak laki-laki (boy) menggunakan kata ganti 'He'." },
+            { q: "Mita is a girl. ... is from Manado.", opt: ["He", "She", "They", "It"], ans: 1, solo: "Multistructural", hots: false, exp: "Anak perempuan (girl) menggunakan kata ganti 'She'." },
+            { q: "My grandmother and grandfather live in Malang. ... are kind.", opt: ["He", "She", "They", "It"], ans: 2, solo: "Multistructural", hots: false, exp: "Dua orang (kakek & nenek) disapa dengan 'They'." },
+            { q: "This is Putra. He is my ... brother.", opt: ["little", "big", "old", "mother"], ans: 0, solo: "Multistructural", hots: false, exp: "Di materi Bab 2, Putra adalah 'little brother' (adik laki-laki)." }
+        ]
+    },
+    {
+        level: 3,
+        title: "Level 3: Multistructural (Introducing Family)",
+        questions: [
+            { q: "Complete: 'This ... my family.'", opt: ["is", "are", "am", "do"], ans: 0, solo: "Multistructural", hots: false, exp: "'Family' sebagai kesatuan menggunakan to be 'is'." },
+            { q: "Complete: 'They ... my grandmother and grandfather.'", opt: ["is", "are", "am", "was"], ans: 1, solo: "Multistructural", hots: false, exp: "Subjek 'They' berpasangan dengan to be 'are'." },
+            { q: "Complete: 'I ... 9 years old.'", opt: ["is", "are", "am", "be"], ans: 2, solo: "Multistructural", hots: false, exp: "Subjek 'I' berpasangan dengan 'am'." },
+            { q: "Bara asks: 'Who is she?' Pipit answers: '... is my mother.'", opt: ["He", "She", "They", "I"], ans: 1, solo: "Multistructural", hots: false, exp: "Pertanyaan menggunakan 'she', jawaban juga merujuk 'She'." },
+            { q: "Pipit: 'This is Pak Ahmad. He is my father. He is 35 years old.' How old is Pak Ahmad?", opt: ["33", "35", "5", "9"], ans: 1, solo: "Multistructural", hots: false, exp: "Sesuai teks Audio 2.2, Pak Ahmad berusia 35 tahun." },
+            { q: "Bu Euis is 33 years old. She is Pipit's ...", opt: ["Sister", "Mother", "Grandmother", "Twins"], ans: 1, solo: "Multistructural", hots: false, exp: "Bu Euis adalah Ibu (mother) dari Pipit." },
+            { q: "Putra is 5 years old. He is Pipit's little ...", opt: ["sister", "brother", "father", "mother"], ans: 1, solo: "Multistructural", hots: false, exp: "Putra adalah adik laki-laki (little brother)." },
+            { q: "Putri is 5 years old. She is Pipit's little ...", opt: ["sister", "brother", "father", "mother"], ans: 0, solo: "Multistructural", hots: false, exp: "Putri adalah adik perempuan (little sister)." },
+            { q: "What question do you ask to know someone's male family member?", opt: ["Who is she?", "Who is he?", "Where are you from?", "How old are you?"], ans: 1, solo: "Multistructural", hots: false, exp: "'Who is he?' digunakan untuk menanyakan anggota keluarga laki-laki." },
+            { q: "What question do you ask to know plural family members?", opt: ["Who is he?", "Who is she?", "Who are they?", "Where is he?"], ans: 2, solo: "Multistructural", hots: false, exp: "'Who are they?' untuk anggota keluarga jamak." }
+        ]
+    },
+    {
+        level: 4,
+        title: "Level 4: Relational (Indonesian Origins)",
+        questions: [
+            { q: "Pipit says: 'I am from Malang.' Where is Pipit from?", opt: ["Bandung", "Malang", "Madura", "Manado"], ans: 1, solo: "Relational", hots: false, exp: "Pipit berasal dari Malang." },
+            { q: "Pipit's father is from Madura. Where is her father from?", opt: ["Madura", "Malang", "Bandung", "Medan"], ans: 0, solo: "Relational", hots: false, exp: "Ayah Pipit berasal dari Madura." },
+            { q: "Pipit's mother is from Bandung. Where is her mother from?", opt: ["Bandung", "Sumba", "Manado", "Papua"], ans: 0, solo: "Relational", hots: false, exp: "Ibu Pipit berasal dari Bandung." },
+            { q: "Pak Tigor is from Medan. Medan is located in...", opt: ["Jawa Barat", "Sumatra Utara", "Jawa Timur", "Bali"], ans: 1, solo: "Relational", hots: false, exp: "Medan berada di provinsi Sumatra Utara." },
+            { q: "Bara is from Sumba. Sumba is in...", opt: ["Nusa Tenggara Timur", "Sulawesi Selatan", "Maluku", "Papua"], ans: 0, solo: "Relational", hots: false, exp: "Sumba berada di provinsi Nusa Tenggara Timur (NTT)." },
+            { q: "Mita is from Manado. Manado is located in...", opt: ["Sulawesi Utara", "Jawa Barat", "Kalimantan Barat", "Aceh"], ans: 0, solo: "Relational", hots: false, exp: "Manado terletak di Sulawesi Utara." },
+            { q: "Where is the correct structure? 'Where ... your father from?'", opt: ["is", "are", "am", "do"], ans: 0, solo: "Relational", hots: false, exp: "Father adalah tunggal, jadi menggunakan 'is'." },
+            { q: "Where is the correct structure? 'Where ... you from?'", opt: ["is", "are", "am", "does"], ans: 1, solo: "Relational", hots: false, exp: "Subjek 'you' menggunakan kata bantu 'are'." },
+            { q: "Where is the correct structure? 'Where ... they from?'", opt: ["is", "are", "am", "be"], ans: 1, solo: "Relational", hots: false, exp: "Subjek 'they' menggunakan kata bantu 'are'." },
+            { q: "Complete: 'My mother is ... Bandung.'", opt: ["on", "at", "from", "to"], ans: 2, solo: "Relational", hots: false, exp: "Preposisi asal daerah menggunakan 'from'." }
+        ]
+    },
+    {
+        level: 5,
+        title: "Level 5: Relational (Maps & Provinces Matching)",
+        questions: [
+            { q: "Match city to province: Bandung is in ...", opt: ["Jawa Timur", "Jawa Barat", "Jawa Tengah", "DKI Jakarta"], ans: 1, solo: "Relational", hots: false, exp: "Bandung adalah ibu kota Jawa Barat." },
+            { q: "Match city to province: Malang is in ...", opt: ["Jawa Barat", "Jawa Tengah", "Jawa Timur", "Bali"], ans: 2, solo: "Relational", hots: false, exp: "Malang terletak di Jawa Timur." },
+            { q: "If someone is from Jayapura, which island are they from?", opt: ["Sumatra", "Kalimantan", "Papua", "Sulawesi"], ans: 2, solo: "Relational", hots: false, exp: "Jayapura terletak di pulau Papua." },
+            { q: "If someone is from Pontianak, which province are they from?", opt: ["Kalimantan Barat", "Kalimantan Selatan", "Sulawesi Selatan", "Maluku"], ans: 0, solo: "Relational", hots: false, exp: "Pontianak terletak di Kalimantan Barat." },
+            { q: "Makassar is the capital of which province?", opt: ["Sulawesi Utara", "Sulawesi Selatan", "Nusa Tenggara Barat", "Maluku"], ans: 1, solo: "Relational", hots: false, exp: "Makassar terletak di Sulawesi Selatan." },
+            { q: "Complete dialogue: 'Where is Bara from?' -> 'He is from ...'", opt: ["Sumba", "Bandung", "Malang", "Madura"], ans: 0, solo: "Relational", hots: false, exp: "Berdasarkan komik cerita, Bara berasal dari Sumba." },
+            { q: "Complete dialogue: 'Where is Sumba?' -> 'It is in ...'", opt: ["Jawa Barat", "Nusa Tenggara Timur", "Papua", "Sumatra Utara"], ans: 1, solo: "Relational", hots: false, exp: "Sumba terletak di Nusa Tenggara Timur (NTT)." },
+            { q: "Bara says: 'My father and mother are from Sumba.' This means both parents come from...", opt: ["The same place", "Different places", "Abroad", "Another country"], ans: 0, solo: "Relational", hots: false, exp: "Kedua orang tua Bara berasal dari tempat yang sama (Sumba)." },
+            { q: "Pipit's father is from Madura, mother is from Bandung. Her parents come from...", opt: ["The same city", "Different island/culture", "The same village", "Outside Indonesia"], ans: 1, solo: "Relational", hots: false, exp: "Madura dan Bandung adalah daerah/suku yang berbeda." },
+            { q: "Which expression is correct to ask someone's place of origin?", opt: ["Who is your father?", "Where are you from?", "How are you?", "What is your origin name?"], ans: 1, solo: "Relational", hots: false, exp: "'Where are you from?' adalah ungkapan baku menanyakan asal." }
+        ]
+    },
+    {
+        level: 6,
+        title: "Level 6: Extended Abstract (Story Comprehension)",
+        questions: [
+            { q: "Read: Mita visits Pipit's house. Mita says 'I love seeing your family photo.' What is Mita looking at?", opt: ["A family picture", "A swing", "A map of Indonesia", "A toy"], ans: 0, solo: "Extended Abstract", hots: false, exp: "Mita melihat foto keluarga Pipit di dinding." },
+            { q: "In the comic strip, after looking at the photo, what do Pipit and Mita do next?", opt: ["Eat lunch", "Play on the swings outside", "Go to school", "Sleep"], ans: 1, solo: "Extended Abstract", hots: false, exp: "Pipit mengajak Mita: 'Let's play on the swings outside.'" },
+            { q: "Why are Putra and Putri called 'twins'?", opt: ["They have the same age (5 years old)", "They live in different houses", "They have different parents", "They are 9 years old"], ans: 0, solo: "Extended Abstract", hots: false, exp: "Mereka lahir bersamaan dan berusia sama (5 tahun)." },
+            { q: "If Pipit is 9 years old and Putra is 5 years old, how much older is Pipit?", opt: ["2 years older", "4 years older", "5 years older", "3 years older"], ans: 1, solo: "Extended Abstract", hots: true, exp: "9 - 5 = 4 tahun lebih tua." },
+            { q: "Pak Ahmad (35) and Bu Euis (33). What is the age difference between Pipit's parents?", opt: ["1 year", "2 years", "3 years", "4 years"], ans: 1, solo: "Extended Abstract", hots: true, exp: "35 - 33 = 2 tahun." },
+            { q: "What is the relationship between Mita and Pipit?", opt: ["Sisters", "Classmates / Friends", "Mother and daughter", "Twins"], ans: 1, solo: "Extended Abstract", hots: false, exp: "Mita dan Pipit adalah teman sekelas/sahabat." },
+            { q: "In Story 2, Pipit and Mita are visiting whose house?", opt: ["Pipit's house", "Mita's house", "Bara's house", "Pak Tigor's house"], ans: 2, solo: "Extended Abstract", hots: false, exp: "Di Comic Strip 2.2, mereka berkunjung ke rumah Bara." },
+            { q: "What photo does Bara show to Pipit and Mita?", opt: ["Photo in Sumba", "Photo in Jakarta", "Photo in Malang", "Photo in Bandung"], ans: 0, solo: "Extended Abstract", hots: false, exp: "Bara menunjukkan fotonya saat berada di Sumba." },
+            { q: "Who answers Pipit's question when Pipit asks 'Where is Sumba?'", opt: ["Bara", "Mita", "Pak Ahmad", "Ibu Euis"], ans: 1, solo: "Extended Abstract", hots: false, exp: "Mita yang menjawab: 'It is in Nusa Tenggara Timur.'" },
+            { q: "What value can we learn from Pipit, Mita, and Bara having parents from different provinces?", opt: ["Diversity and friendship", "Competition", "Fighting", "Isolation"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Keberagaman suku/asal memperkaya persahabatan (Bhinneka Tunggal Ika)." }
+        ]
+    },
+    {
+        level: 7,
+        title: "Level 7: Critical Thinking (Grammar & Logic Analysis)",
+        questions: [
+            { q: "Identify the error: 'She is my father.' Why is this sentence wrong?", opt: ["'Father' should use pronoun 'He'", "'She' is for boys", "'Father' is female", "No error"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Father adalah laki-laki, harus menggunakan kata ganti 'He'." },
+            { q: "Identify the error: 'They is my little brother and sister.' What should be corrected?", opt: ["Change 'They' to 'He'", "Change 'is' to 'are'", "Change 'sister' to 'brother'", "Change 'my' to 'I'"], ans: 1, solo: "Extended Abstract", hots: true, exp: "Subjek jamak 'They' harus diikuti to be 'are'." },
+            { q: "Select the sentence with CORRECT punctuation and capitalization:", opt: ["my father is from bandung.", "My father is from Bandung.", "My Father Is From bandung.", "my Father is from Bandung"], ans: 1, solo: "Extended Abstract", hots: true, exp: "Awal kalimat dan nama kota (Bandung) harus diawali huruf kapital dan diakhiri titik." },
+            { q: "Which statement is LOGICALLY correct based on family relations?", opt: ["My father's mother is my grandmother.", "My sister is my father's brother.", "My brother is older than my grandfather.", "My mother's father is my uncle."], ans: 0, solo: "Extended Abstract", hots: true, exp: "Ibu dari ayah kita adalah Nenek (Grandmother)." },
+            { q: "What is the relationship of your father's brother to you?", opt: ["Grandfather", "Uncle (Paman)", "Brother", "Sister"], ans: 1, solo: "Extended Abstract", hots: true, exp: "Saudara laki-laki ayah dinamakan Paman (Uncle)." },
+            { q: "If Aulia is from West Java, which city might her family come from?", opt: ["Bandung", "Surabaya", "Medan", "Makassar"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Bandung adalah ibu kota Jawa Barat." },
+            { q: "Analyze: 'He is my grandfather. He is 5 years old.' Why is this sentence illogical?", opt: ["Grandfathers are old, not 5 years old", "Grandfather should use 'She'", "5 years old means adult", "Grandfather is a girl"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Kakek tidak mungkin berusia 5 tahun; usia 5 tahun adalah untuk anak-anak." },
+            { q: "Complete with logic: 'Putra and Putri are twins. If Putra is 5, Putri is ...'", opt: ["10 years old", "5 years old", "35 years old", "1 year old"], ans: 1, solo: "Extended Abstract", hots: true, exp: "Anak kembar memiliki usia yang sama." },
+            { q: "Which sentence accurately describes origins?", opt: ["I am from Malang, but my father is from Madura.", "I am at Malang, from father is Madura.", "My father from is Malang.", "Where is from your father?"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Struktur tata bahasa dan urutan kata sudah benar." },
+            { q: "Why do we say 'Where ARE your father and mother from?' instead of 'IS'?", opt: ["Because parents are two people (plural)", "Because father is male", "Because mother is female", "Because of the word 'where'"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Subjek 'father and mother' berjumlah 2 orang (jamak/they), maka memakai 'are'." }
+        ]
+    },
+    {
+        level: 8,
+        title: "Level 8: Advanced Relational (Cultural & IPS Integration)",
+        questions: [
+            { q: "Indonesia has many provinces. Learning where our friends come from teaches us...", opt: ["Tolerance and respect", "To mock each other", "To speak only one language", "To move to another city"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Mengetahui asal daerah melatih sikap toleransi dan keberagaman." },
+            { q: "If Pipit's mother is from Bandung, West Java, what traditional house might be in her region?", opt: ["Rumah Kasepuhan / Sunda", "Rumah Gadang", "Tongkonan", "Honai"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Bandung (Jawa Barat) adalah wilayah kebudayaan Sunda." },
+            { q: "Bara comes from Sumba (NTT), while Mita is from Manado (North Sulawesi). They live in different...", opt: ["Islands and Provinces", "Countries", "Planets", "Continents"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Sumba dan Manado terletak di pulau dan provinsi yang berbeda di Indonesia." },
+            { q: "If Pak Tigor is from Medan, North Sumatra, which famous lake is near his origin region?", opt: ["Lake Toba", "Lake Singkarak", "Lake Sentani", "Lake Poso"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Danau Toba terletak di Sumatra Utara." },
+            { q: "Madura is famous for its culture. Pipit's father is from Madura. Madura is near which major island?", opt: ["Java", "Sumatra", "Kalimantan", "Bali"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Pulau Madura terletak dekat dengan Jawa Timur." },
+            { q: "Arrange the words correctly: [ from - Where - mother - is - your - ? ]", opt: ["Where is your mother from?", "Where your mother is from?", "From where is mother your?", "Your mother is from where?"], ans: 0, solo: "Relational", hots: false, exp: "Susunan kalimat tanya yang benar adalah: Where + is + your mother + from?" },
+            { q: "Arrange the words correctly: [ twins - They - are - . ]", opt: ["They are twins.", "Twins are they.", "Are they twins.", "They twins are."], ans: 0, solo: "Relational", hots: false, exp: "Susunan positif: Subjek (They) + Verb (are) + Complement (twins)." },
+            { q: "Arrange the words correctly: [ is - Pak Ahmad - father - my - . ]", opt: ["Pak Ahmad is my father.", "My father Pak Ahmad is.", "Is Pak Ahmad my father.", "Father my is Pak Ahmad."], ans: 0, solo: "Relational", hots: false, exp: "Pak Ahmad is my father." },
+            { q: "Choose the proper introduction sentence for a family photo:", opt: ["This is my family.", "Who are you?", "I don't like photos.", "Where is my family?"], ans: 0, solo: "Relational", hots: false, exp: "'This is my family' adalah kalimat pembuka saat mengenalkan foto keluarga." },
+            { q: "If someone asks 'Where are you from?', what is the best response?", opt: ["I am 9 years old.", "I am from Surabaya.", "She is my sister.", "He is my father."], ans: 1, solo: "Relational", hots: false, exp: "Pertanyaan asal daerah dijawab dengan menyebutkan daerah asal (I am from...)." }
+        ]
+    },
+    {
+        level: 9,
+        title: "Level 9: HOTS (Synthesis & Problem Solving)",
+        questions: [
+            { q: "Sita's father is from Aceh (Sumatra). Her mother is from Papua. Sita was born in Jakarta. How many islands are mentioned in Sita's background?", opt: ["3 islands (Sumatra, Papua, Java)", "1 island", "2 islands", "4 islands"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Aceh (Sumatra), Papua (Papua), Jakarta (Jawa) = 3 pulau." },
+            { q: "Rudi's family tree: Grandfather (60), Father (35), Rudi (9). Who is the youngest?", opt: ["Grandfather", "Father", "Rudi", "All same age"], ans: 2, solo: "Extended Abstract", hots: true, exp: "Rudi berusia 9 tahun, paling muda (youngest)." },
+            { q: "Read the dialogue:\nStudent A: 'Is she your sister?'\nStudent B: 'No, she is my mother.'\nWhat can we infer about Student B's response?", opt: ["Student B is correcting Student A's wrong assumption.", "Student A was correct.", "Student B has no mother.", "Student B doesn't know her."], ans: 0, solo: "Extended Abstract", hots: true, exp: "Student B mengoreksi asumsi salah dari Student A." },
+            { q: "If your friend moves from Makassar to your class, how should you ask about their background?", opt: ["Where are you from?", "Who are you from?", "What is your father name?", "How old is Makassar?"], ans: 0, solo: "Extended Abstract", hots: true, exp: "'Where are you from?' adalah cara ramah dan tepat menanyakan asal teman." },
+            { q: "Analyze the table data:\n- Pipit: Malang\n- Father: Madura\n- Mother: Bandung\nHow many different places of origin are in Pipit's immediate family?", opt: ["3 different places", "1 place", "2 places", "4 places"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Malang, Madura, dan Bandung = 3 lokasi berbeda." },
+            { q: "Which statement best expresses national unity in family origins?", opt: ["Even though my parents come from different cities, we are all Indonesians.", "Only people from one city are good.", "We shouldn't talk about origins.", "Family origin is secret."], ans: 0, solo: "Extended Abstract", hots: true, exp: "Mencerminkan nilai persatuan Indonesia di tengah keberagaman." },
+            { q: "What pronoun replaces 'Pak Ahmad and Bu Euis' when talking about both of them?", opt: ["He", "She", "They", "We"], ans: 2, solo: "Extended Abstract", hots: true, exp: "Dua orang pihak ketiga diganti dengan kata ganti 'They'." },
+            { q: "If Putra is Pipit's little brother, what is Pipit to Putra?", opt: ["His sister (or older sister)", "His mother", "His brother", "His grandmother"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Jika Putra adalah adik laki-laki Pipit, maka Pipit adalah kakak perempuan Putra." },
+            { q: "Create the question for this answer: 'My father is from Medan.'", opt: ["Where is your father from?", "Who is your father?", "Where are you from?", "Is your father from Medan?"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Jawaban asal ayah dihasilkan dari pertanyaan 'Where is your father from?'" },
+            { q: "Which sentence shows plural subject-verb agreement correctly?", opt: ["My grandmother and grandfather is from Bali.", "My grandmother and grandfather are from Bali.", "My grandmother and grandfather am from Bali.", "My grandmother and grandfather be from Bali."], ans: 1, solo: "Extended Abstract", hots: true, exp: "Subjek jamak (2 orang) memerlukan kata kerja 'are'." }
+        ]
+    },
+    {
+        level: 10,
+        title: "Level 10: Master HOTS & SOLO Extended Evaluation",
+        questions: [
+            { q: "[HOTS Mastery 1] Family Tree Logic:\nMr. Budi has two children: Edo and Siti. Edo has a son named Doni. What is the relation of Mr. Budi to Doni?", opt: ["Grandfather", "Father", "Uncle", "Brother"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Ayah dari ayah Doni adalah Kakek (Grandfather) bagi Doni." },
+            { q: "[HOTS Mastery 2] Family Tree Logic:\nWhat is the relation of Siti to Doni in the story above?", opt: ["Aunt (Tante/Bibi)", "Mother", "Sister", "Grandmother"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Saudara perempuan dari ayah Doni adalah Bibi/Tante (Aunt)." },
+            { q: "[HOTS Mastery 3] Origin Calculation:\nIn a group of 4 students: 2 are from Java, 1 from Sumatra, and 1 from Sulawesi. What percentage comes from outside Java?", opt: ["50%", "25%", "75%", "100%"], ans: 0, solo: "Extended Abstract", hots: true, exp: "2 dari 4 siswa = 50% berasal dari luar Jawa." },
+            { q: "[HOTS Mastery 4] Error Analysis:\nRead: 'Hi, I am Edo. This is my mother. He is 30 years old. She is from Padang.' What is the grammatical mistake?", opt: ["Using 'He' for mother instead of 'She'", "Using 'from' before Padang", "Using 'is' for age", "Capitalizing Padang"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Ibu (mother) adalah wanita, seharusnya menggunakan kata ganti 'She', bukan 'He'." },
+            { q: "[HOTS Mastery 5] Critical Comparison:\nCompare Sentence A: 'He is my father.' and Sentence B: 'They are my parents.' What is the difference?", opt: ["Sentence A refers to 1 male person; Sentence B refers to both mother and father together.", "Sentence A is plural; Sentence B is singular.", "Sentence A talks about age; Sentence B talks about origins.", "There is no difference."], ans: 0, solo: "Extended Abstract", hots: true, exp: "Sentence A spesifik 1 orang (ayah), Sentence B jamak (kedua orang tua)." },
+            { q: "[HOTS Mastery 6] Dialogue Completion:\nTeacher: '...' \nStudent: 'My father is from Semarang and my mother is from Palembang.'\nWhat was the teacher's question?", opt: ["Where are your father and mother from?", "Who is your mother?", "How old are your parents?", "What are your parents doing?"], ans: 0, solo: "Extended Abstract", hots: true, exp: "Pertanyaan yang tepat mencakup asal kedua orang tua." },
+            { q: "[HOTS Mastery 7] Synthesizing Text:\n'Pipit's family lives in Malang. Her father was born in Madura and her mother in Bandung. They love visiting their grandparents during holidays.' What can be concluded?", opt: ["Pipit's family has cultural background from different regions in Indonesia.", "Pipit never travels.", "Pipit's parents were born in Malang.", "Pipit doesn't have grandparents."], ans: 0, solo: "Extended Abstract", hots: true, exp: "Keluarga Pipit memiliki latar belakang budaya dari berbagai daerah." },
+            { q: "[HOTS Mastery 8] Multi-step Problem:\nPutra and Putri are 5 years old twins. Pipit is 9. In 5 years, how old will the twins be?", opt: ["10 years old", "14 years old", "9 years old", "15 years old"], ans: 0, solo: "Extended Abstract", hots: true, exp: "5 tahun saat ini + 5 tahun mendatang = 10 tahun." },
+            { q: "[HOTS Mastery 9] Language Structure Evaluation:\nWhich sentence correctly uses pronouns, to-be, and origins?", opt: ["She is my sister and she is from Bali.", "He is my sister and he are from Bali.", "They is my sister and she am from Bali.", "She are my sister and he is from Bali."], ans: 0, solo: "Extended Abstract", hots: true, exp: "Subjek 'She', to-be 'is', serta struktur asal kata sudah tepat." },
+            { q: "[HOTS Mastery 10] SOLO Taxonomy Reflection:\nWhy is it important to know your family members' origins in English?", opt: ["To be able to share and present our cultural identity to others clearly.", "Just to pass the test.", "Because English has no pronouns.", "To change our origin."], ans: 0, solo: "Extended Abstract", hots: true, exp: "Tujuan utama pembelajaran Bab 2 adalah menceritakan latar belakang identitas keluarga secara percaya diri." }
+        ]
+    }
+];
+
+// --- APP STATE ---
+let currentStudent = { name: "", school: "" };
+let currentLevelIndex = 0;
+let currentQuestionIndex = 0;
+let score = 0;
+let userAnswers = [];
+let gameResults = JSON.parse(localStorage.getItem('english_quest_results')) || [];
+
+// --- SOUND / TTS SYNTHESIS ---
+function speakText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // stop prior speech
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.85; // slightly slower for primary students
+        window.speechSynthesis.speak(utterance);
+    } else {
+        alert("Fitur suara tidak didukung di browser ini.");
+    }
+}
+
+// --- SCREEN NAVIGATION ---
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+
+    if (screenId === 'screen-levels') {
+        renderLevelGrid();
+    } else if (screenId === 'screen-vocab') {
+        renderVocabTable();
+    } else if (screenId === 'screen-teacher') {
+        renderTeacherDashboard();
+    }
+}
+
+// --- IDENTITY FORM HANDLER ---
+document.getElementById('form-identity').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('student-name').value.trim();
+    const school = document.getElementById('school-name').value.trim();
+    
+    if (name && school) {
+        currentStudent = { name, school };
+        document.getElementById('display-identity').innerText = `👤 ${name} | 🏫 ${school}`;
+        showScreen('screen-levels');
+    }
+});
+
+// --- RENDER LEVEL GRID ---
+function renderLevelGrid() {
+    const container = document.getElementById('level-container');
+    container.innerHTML = '';
+
+    gameLevels.forEach((lvl, index) => {
+        const card = document.createElement('div');
+        card.className = 'level-card';
+
+        // Check completion status from results
+        const isPassed = gameResults.some(r => r.name === currentStudent.name && r.school === currentStudent.school && r.level === lvl.level && r.percentage >= 70);
+        
+        if (isPassed) {
+            card.classList.add('completed');
+        }
+
+        card.innerHTML = `
+            <div style="font-size:24px; margin-bottom:5px;">${isPassed ? '⭐' : '🎯'}</div>
+            <strong>Level ${lvl.level}</strong>
+            <div style="font-size: 11px; color: #64748b; margin-top:5px;">${lvl.title.split(':')[1]}</div>
+        `;
+
+        card.onclick = () => startLevel(index);
+        container.appendChild(card);
+    });
+}
+
+// --- QUIZ LOGIC ---
+function startLevel(levelIndex) {
+    currentLevelIndex = levelIndex;
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = [];
+    showScreen('screen-quiz');
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const lvlData = gameLevels[currentLevelIndex];
+    const qData = lvlData.questions[currentQuestionIndex];
+
+    document.getElementById('quiz-level-title').innerText = `Level ${lvlData.level}: ${lvlData.title}`;
+    document.getElementById('quiz-progress').innerText = `Soal ${currentQuestionIndex + 1} / 10`;
+    document.getElementById('quiz-score').innerText = `Skor: ${score}`;
+
+    document.getElementById('question-text').innerText = qData.q;
+    document.getElementById('btn-audio-question').onclick = () => speakText(qData.q);
+
+    // Badges
+    document.getElementById('solo-badge').innerText = `SOLO: ${qData.solo}`;
+    const hotsBadge = document.getElementById('hots-badge');
+    if (qData.hots) {
+        hotsBadge.style.display = 'inline-block';
+    } else {
+        hotsBadge.style.display = 'none';
+    }
+
+    // Hide explanation and next button
+    document.getElementById('explanation-box').style.display = 'none';
+    document.getElementById('btn-next').style.display = 'none';
+
+    // Render Options
+    const optContainer = document.getElementById('options-container');
+    optContainer.innerHTML = '';
+
+    qData.opt.forEach((optionText, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<strong>${String.fromCharCode(65 + i)}.</strong> ${optionText} 
+            <span class="audio-btn-inline" style="float:right; cursor:pointer;" onclick="event.stopPropagation(); speakText('${optionText}')">🔊</span>`;
+        btn.onclick = () => checkAnswer(i, btn);
+        optContainer.appendChild(btn);
+    });
+}
+
+function checkAnswer(selectedIndex, selectedBtn) {
+    const qData = gameLevels[currentLevelIndex].questions[currentQuestionIndex];
+    const options = document.querySelectorAll('.option-btn');
+    
+    // Disable all options
+    options.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (selectedIndex === qData.ans) {
+        selectedBtn.classList.add('correct');
+        score += 10;
+        document.getElementById('quiz-score').innerText = `Skor: ${score}`;
+    } else {
+        selectedBtn.classList.add('wrong');
+        options[qData.ans].classList.add('correct');
+    }
+
+    // Show Critical Thinking Explanation
+    document.getElementById('explanation-text').innerText = qData.exp;
+    document.getElementById('explanation-box').style.display = 'block';
+    document.getElementById('btn-next').style.display = 'inline-flex';
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < 10) {
+        loadQuestion();
+    } else {
+        finishLevel();
+    }
+}
+
+function quitQuiz() {
+    if (confirm("Apakah Anda yakin ingin keluar dari level ini? Kemajuan tidak akan disimpan.")) {
+        showScreen('screen-levels');
+    }
+}
+
+function finishLevel() {
+    const percentage = (score / 100) * 100;
+    const resultRecord = {
+        date: new Date().toLocaleDateString('id-ID') + ' ' + new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}),
+        name: currentStudent.name,
+        school: currentStudent.school,
+        level: gameLevels[currentLevelIndex].level,
+        score: score,
+        percentage: percentage + '%'
+    };
+
+    gameResults.push(resultRecord);
+    localStorage.setItem('english_quest_results', JSON.stringify(gameResults));
+
+    alert(`🎉 Level Selesai!\n\nNama: ${currentStudent.name}\nSkor Akhir: ${score} / 100\nPersentase Kelulusan: ${percentage}%`);
+    showScreen('screen-levels');
+}
+
+// --- GLOSARIUM & AUDIO TABLE ---
+function renderVocabTable() {
+    const tbody = document.getElementById('vocab-body');
+    tbody.innerHTML = '';
+
+    dictionary.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong>${item.en}</strong></td>
+            <td><code style="color:#d97706">${item.ph}</code></td>
+            <td>${item.id}</td>
+            <td>
+                <button class="audio-btn" onclick="speakText('${item.en}')">🔊</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// --- DASHBOARD GURU ---
+function renderTeacherDashboard() {
+    const tbody = document.getElementById('results-body');
+    tbody.innerHTML = '';
+
+    if (gameResults.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada data nilai siswa.</td></tr>`;
+        return;
+    }
+
+    // Sort by latest
+    const sortedResults = [...gameResults].reverse();
+
+    sortedResults.forEach(res => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${res.date}</td>
+            <td><strong>${res.name}</strong></td>
+            <td>${res.school}</td>
+            <td>Level ${res.level}</td>
+            <td>${res.score}</td>
+            <td><span class="badge ${parseInt(res.percentage) >= 70 ? 'badge-solo' : 'badge-hots'}" style="background:${parseInt(res.percentage) >= 70 ? '#2ecc71' : '#e74c3c'}">${res.percentage}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// --- DOWNLOAD CSV FOR EXCEL ---
+function downloadCSV() {
+    if (gameResults.length === 0) {
+        alert("Tidak ada data untuk diunduh!");
+        return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Tanggal,Nama Siswa,Sekolah,Level,Skor,Persentase\n";
+
+    gameResults.forEach(res => {
+        const row = `"${res.date}","${res.name}","${res.school}","Level ${res.level}","${res.score}","${res.percentage}"`;
+        csvContent += row + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Rekapan_Nilai_EnglishQuest_Chapter2.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function clearData() {
+    if (confirm("Apakah Anda yakin ingin menghapus SELURUH rekapan nilai siswa dari sistem browser ini?")) {
+        gameResults = [];
+        localStorage.removeItem('english_quest_results');
+        renderTeacherDashboard();
+    }
+}
+</script>
+</body>
+</html>
