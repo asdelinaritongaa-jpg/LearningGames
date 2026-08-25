@@ -1,11 +1,17 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Learning Games</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -19,15 +25,25 @@
             padding: 50px 20px;
         }
 
-        h1 {
+        header h1 {
             margin: 0;
             font-size: 40px;
+        }
+
+        header p {
+            font-size: 18px;
+            margin-top: 10px;
         }
 
         .container {
             max-width: 900px;
             margin: 40px auto;
             padding: 20px;
+        }
+
+        .container > h2 {
+            margin-bottom: 30px;
+            color: #333;
         }
 
         .subjects {
@@ -42,11 +58,27 @@
             width: 280px;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         .emoji {
             font-size: 60px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin: 15px 0 10px;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 20px;
         }
 
         .button {
@@ -56,43 +88,84 @@
             text-decoration: none;
             padding: 12px 25px;
             border-radius: 10px;
-            margin-top: 15px;
+            margin-top: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .button:hover {
+            background: #3730a3;
+            transform: scale(1.05);
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            .card {
+                width: 90%;
+                max-width: 320px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<header>
-    <h1>🎮 Learning Games</h1>
-    <p>Belajar sambil bermain!</p>
-</header>
+    <header>
+        <h1>🎮 Learning Games</h1>
+        <p>Belajar sambil bermain!</p>
+    </header>
 
-<div class="container">
+    <div class="container">
 
-    <h2>📚 Pilih Mata Pelajaran</h2>
+        <h2>📚 Pilih Mata Pelajaran</h2>
 
-   <div class="subjects">
+        <div class="subjects">
 
-    <div class="card">
-        <div class="emoji">🇬🇧</div>
-        <h2>Bahasa Inggris</h2>
-        <p>10 Chapters</p>
-        <a class="button" href="english/">Mulai</a>
+            <!-- BAHASA INGGRIS -->
+            <div class="card">
+                <div class="emoji">🇬🇧</div>
+
+                <h2>Bahasa Inggris</h2>
+
+                <p>10 Chapters</p>
+
+                <a class="button" href="./english/index.html">
+                    🚀 Mulai
+                </a>
+            </div>
+
+            <!-- IPAS -->
+            <div class="card">
+                <div class="emoji">🔬</div>
+
+                <h2>IPAS</h2>
+
+                <p>10 Chapters</p>
+
+                <a class="button" href="./ipas/index.html">
+                    🚀 Mulai
+                </a>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="card">
-        <div class="emoji">🔬</div>
-        <h2>IPAS</h2>
-        <p>10 Chapters</p>
-        <a class="button" href="ipas/">Mulai</a>
-    </div>
-
-</div>
-
-    </div>
-
-</div>
+    <footer>
+        🎓 Learning Games — Belajar dengan cara yang menyenangkan!
+    </footer>
 
 </body>
 </html>
+```
