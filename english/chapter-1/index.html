@@ -5,13 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>English - Chapter 1</title>
+    <title>English Chapter 1</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -20,12 +16,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 30px 15px;
+            padding: 30px;
         }
 
         .container {
-            width: 100%;
-            max-width: 750px;
+            width: 90%;
+            max-width: 700px;
             background: white;
             padding: 35px;
             border-radius: 30px;
@@ -36,7 +32,6 @@
         h1 {
             color: #ff6b6b;
             font-size: 40px;
-            margin-bottom: 10px;
         }
 
         h2 {
@@ -55,209 +50,89 @@
             border-radius: 20px;
             padding: 20px;
             font-size: 20px;
-            color: #444;
-            margin-bottom: 25px;
         }
 
-        .chapter-card {
-            padding: 20px;
+        .game-box {
+            margin-top: 30px;
+            padding: 25px;
             background: #d0ebff;
-            border-radius: 20px;
+            border-radius: 25px;
+        }
+
+        .game-box h3 {
+            font-size: 28px;
             color: #1971c2;
-            font-size: 21px;
-            font-weight: bold;
-            margin-bottom: 25px;
         }
 
-        .games-title {
-            color: #ff6b6b;
-            font-size: 26px;
-            margin: 25px 0 15px;
-        }
-
-        .games {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .game-card {
-            text-decoration: none;
-            color: #333;
-            padding: 20px 10px;
-            border-radius: 20px;
-            background: #f8f9fa;
-            border: 3px solid #e7e7e7;
-            transition: 0.2s;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
-        }
-
-        .game-icon {
-            font-size: 45px;
-            margin-bottom: 8px;
-        }
-
-        .game-name {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .game-description {
-            font-size: 14px;
-            color: #666;
-            margin-top: 6px;
-        }
-
-        .play {
+        .game-button {
             display: inline-block;
-            margin-top: 10px;
-            padding: 10px 18px;
+            margin-top: 15px;
+            padding: 16px 35px;
             background: #51cf66;
             color: white;
-            border-radius: 12px;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 22px;
             font-weight: bold;
+        }
+
+        .game-button:hover {
+            background: #2f9e44;
         }
 
         .back {
             display: inline-block;
-            margin-top: 30px;
-            padding: 14px 25px;
+            margin-top: 25px;
+            padding: 12px 25px;
             background: #845ef7;
             color: white;
             text-decoration: none;
             border-radius: 15px;
-            font-size: 18px;
-        }
-
-        .back:hover {
-            background: #5f3dc4;
-        }
-
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 32px;
-            }
-
-            h2 {
-                font-size: 25px;
-            }
-
-            .games {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <h1>🌈 English Fun 🌈</h1>
+    <h1>🌈 English Fun 🌈</h1>
 
-        <h2>⭐ Chapter 1 ⭐</h2>
+    <h2>⭐ Chapter 1 ⭐</h2>
 
-        <div class="icon">
-            🐰 📚 🌟
-        </div>
+    <div class="icon">
+        🐰 📚 🎮
+    </div>
 
-        <div class="welcome">
-            🎉 Welcome to Chapter 1!
-            <br><br>
-            Let's learn English together! 😊
-        </div>
+    <div class="welcome">
+        🎉 Welcome to Chapter 1!
+        <br><br>
+        Let's learn English and have fun!
+    </div>
 
-        <div class="chapter-card">
-            🚀 Chapter 1 is ready!
-            <br><br>
-            Get ready to learn and have fun! 🎈
-        </div>
+    <div class="game-box">
 
-        <div class="games-title">
-            🎮 Choose Your Game!
-        </div>
+        <h3>🎮 CHAPTER 1 GAME</h3>
 
-        <div class="games">
+        <p>
+            Ready to become an English Explorer?
+        </p>
 
-            <!-- GAME 1 -->
-            <a class="game-card" href="game/">
-                <div class="game-icon">🎮</div>
+        <p>
+            ⭐ 10 Levels ⭐
+        </p>
 
-                <div class="game-name">
-                    Vocabulary Game
-                </div>
-
-                <div class="game-description">
-                    Learn new English words!
-                </div>
-
-                <div class="play">
-                    ▶ PLAY
-                </div>
-            </a>
-
-            <!-- GAME 2 - sementara -->
-            <a class="game-card" href="game/">
-                <div class="game-icon">🧩</div>
-
-                <div class="game-name">
-                    Word Match
-                </div>
-
-                <div class="game-description">
-                    Match the word and picture!
-                </div>
-
-                <div class="play">
-                    ▶ PLAY
-                </div>
-            </a>
-
-            <!-- GAME 3 - sementara -->
-            <a class="game-card" href="game/">
-                <div class="game-icon">🔊</div>
-
-                <div class="game-name">
-                    Listen & Repeat
-                </div>
-
-                <div class="game-description">
-                    Listen and say the words!
-                </div>
-
-                <div class="play">
-                    ▶ PLAY
-                </div>
-            </a>
-
-            <!-- GAME 4 - sementara -->
-            <a class="game-card" href="game/">
-                <div class="game-icon">🏆</div>
-
-                <div class="game-name">
-                    Challenge
-                </div>
-
-                <div class="game-description">
-                    Test what you have learned!
-                </div>
-
-                <div class="play">
-                    ▶ PLAY
-                </div>
-            </a>
-
-        </div>
-
-        <a class="back" href="../">
-            🏠 Back to English
+        <a class="game-button" href="game/index.html">
+            🚀 PLAY GAME
         </a>
 
     </div>
+
+    <a class="back" href="../index.html">
+        🏠 Back to English
+    </a>
+
+</div>
 
 </body>
 </html>
