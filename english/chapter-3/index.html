@@ -41,6 +41,7 @@
         h2 {
             color: #20c997;
             font-size: 30px;
+            margin-top: 5px;
         }
 
         .icon {
@@ -67,6 +68,7 @@
             font-weight: bold;
         }
 
+        /* GAME BUTTON */
         .game-button {
             display: inline-block;
             margin-top: 25px;
@@ -82,7 +84,8 @@
         }
 
         .game-button:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(251,133,0,0.4);
         }
 
         .game-description {
@@ -91,21 +94,7 @@
             color: #666;
         }
 
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 14px 25px;
-            background: #845ef7;
-            color: white;
-            text-decoration: none;
-            border-radius: 15px;
-            font-size: 18px;
-        }
-
-        .back:hover {
-            background: #5f3dc4;
-        }
-
+        /* FEATURES */
         .features {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -127,6 +116,24 @@
             margin-bottom: 7px;
         }
 
+        /* BACK */
+        .back {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 14px 25px;
+            background: #845ef7;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .back:hover {
+            background: #5f3dc4;
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 600px) {
 
             h1 {
@@ -137,12 +144,21 @@
                 font-size: 24px;
             }
 
+            .icon {
+                font-size: 55px;
+            }
+
+            .welcome {
+                font-size: 18px;
+            }
+
             .features {
                 grid-template-columns: 1fr;
             }
 
             .game-button {
                 font-size: 19px;
+                padding: 15px 25px;
             }
         }
     </style>
@@ -163,8 +179,7 @@
     <div class="welcome">
         🎉 Welcome to Chapter 3!
         <br><br>
-        Let's learn English about
-        <b>My Family Time!</b> 🌟
+        Let's learn English together! 🌟
     </div>
 
     <div class="chapter-card">
@@ -182,8 +197,11 @@
         📍 Where are you?
     </div>
 
+    <!-- ========================= -->
     <!-- TOMBOL MENU GAME -->
-    <a class="game-button" href="game.html">
+    <!-- ========================= -->
+
+    <a class="game-button" href="./game/">
         🎮 PLAY GAME! 🚀
     </a>
 
@@ -209,6 +227,10 @@
         </div>
 
     </div>
+
+    <!-- ========================= -->
+    <!-- BACK TO ENGLISH -->
+    <!-- ========================= -->
 
     <a class="back" href="../">
         🏠 Back to English
