@@ -1,0 +1,2387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Self Hunter - English Grade 3</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:"Trebuchet MS","Comic Sans MS",Arial,sans-serif;
+    background:linear-gradient(135deg,#eef7ff,#fff5fb);
+    color:#263238;
+}
+
+button,input{
+    font-family:inherit;
+}
+
+header{
+    background:linear-gradient(135deg,#6c63ff,#00c9a7);
+    color:white;
+    text-align:center;
+    padding:30px 15px;
+    border-bottom-left-radius:35px;
+    border-bottom-right-radius:35px;
+}
+
+header h1{
+    font-size:40px;
+    margin:5px;
+}
+
+header p{
+    margin:5px;
+    font-size:18px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+.screen{
+    display:none;
+}
+
+.screen.active{
+    display:block;
+}
+
+.card{
+    background:white;
+    border-radius:28px;
+    padding:25px;
+    margin:20px 0;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.start-card{
+    text-align:center;
+    max-width:650px;
+    margin:30px auto;
+}
+
+.logo{
+    font-size:75px;
+}
+
+input{
+    width:100%;
+    max-width:450px;
+    padding:15px;
+    border:3px solid #ddd;
+    border-radius:18px;
+    font-size:18px;
+    outline:none;
+    margin:10px 0;
+}
+
+input:focus{
+    border-color:#6c63ff;
+}
+
+.btn{
+    border:none;
+    padding:14px 22px;
+    border-radius:18px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin:5px;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:scale(1.04);
+}
+
+.primary{
+    background:#6c63ff;
+    color:white;
+}
+
+.green{
+    background:#00b894;
+    color:white;
+}
+
+.orange{
+    background:#ff9f43;
+    color:white;
+}
+
+.red{
+    background:#ff6b6b;
+    color:white;
+}
+
+.blue{
+    background:#0984e3;
+    color:white;
+}
+
+.dark{
+    background:#263238;
+    color:white;
+}
+
+.level-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:15px;
+}
+
+.level-card{
+    padding:20px;
+    border-radius:22px;
+    text-align:center;
+    cursor:pointer;
+    background:#f0edff;
+    border:3px solid #d8d2ff;
+    transition:.2s;
+}
+
+.level-card:hover{
+    transform:translateY(-5px);
+}
+
+.level-card.locked{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+.level-card.completed{
+    background:#dcfff5;
+    border-color:#00b894;
+}
+
+.level-icon{
+    font-size:42px;
+}
+
+.progress-box{
+    background:#eee;
+    height:18px;
+    border-radius:20px;
+    overflow:hidden;
+    margin:15px 0;
+}
+
+.progress{
+    height:100%;
+    background:linear-gradient(90deg,#6c63ff,#00c9a7);
+    width:0%;
+    transition:.4s;
+}
+
+.game-top{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.stat{
+    padding:10px 15px;
+    border-radius:15px;
+    background:#f3f1ff;
+    font-weight:bold;
+}
+
+.question-card{
+    text-align:center;
+    padding:25px;
+}
+
+.question-number{
+    color:#6c63ff;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.question{
+    font-size:28px;
+    font-weight:bold;
+    margin:20px 0;
+}
+
+.emoji-big{
+    font-size:70px;
+    margin:10px;
+}
+
+.options{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+
+.option{
+    border:3px solid #e2e2e2;
+    background:white;
+    padding:18px;
+    border-radius:20px;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.option:hover{
+    background:#f4f2ff;
+    border-color:#6c63ff;
+}
+
+.option.correct{
+    background:#d9fff2;
+    border-color:#00b894;
+}
+
+.option.wrong{
+    background:#ffe1e1;
+    border-color:#ff6b6b;
+}
+
+.info-word{
+    margin:20px auto;
+    padding:18px;
+    max-width:650px;
+    background:#fff8d9;
+    border-radius:20px;
+    text-align:left;
+}
+
+.word-title{
+    font-size:25px;
+    font-weight:bold;
+}
+
+.pronunciation{
+    color:#e17055;
+    font-weight:bold;
+}
+
+.meaning{
+    color:#0984e3;
+    font-weight:bold;
+}
+
+.listen-btn{
+    background:#ffca28;
+    color:#4e342e;
+    border:none;
+    padding:10px 16px;
+    border-radius:15px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.feedback{
+    min-height:40px;
+    font-size:19px;
+    font-weight:bold;
+    margin:15px;
+}
+
+.hint{
+    background:#eaf7ff;
+    border-radius:18px;
+    padding:15px;
+    margin:15px 0;
+    text-align:left;
+}
+
+.result{
+    text-align:center;
+}
+
+.trophy{
+    font-size:80px;
+}
+
+.score-big{
+    font-size:55px;
+    color:#6c63ff;
+    font-weight:bold;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+    background:white;
+}
+
+th,td{
+    padding:12px;
+    border:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#6c63ff;
+    color:white;
+}
+
+tr:nth-child(even){
+    background:#f7f7ff;
+}
+
+.dashboard-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.small{
+    font-size:13px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.badge{
+    display:inline-block;
+    background:#ffeaa7;
+    padding:7px 12px;
+    border-radius:15px;
+    margin:3px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+@media(max-width:600px){
+
+    header h1{
+        font-size:29px;
+    }
+
+    .question{
+        font-size:22px;
+    }
+
+    .emoji-big{
+        font-size:55px;
+    }
+
+    .container{
+        padding:10px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>🕵️ MY SELF HUNTER</h1>
+
+<p>🌈 English Adventure for Grade 3</p>
+
+<p>10 Levels • 100 Questions • Let's Hunt! ⭐</p>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- START -->
+<section id="startScreen" class="screen active">
+
+<div class="card start-card">
+
+<div class="logo">🕵️‍♀️🌈</div>
+
+<h2>WELCOME, LITTLE HUNTER!</h2>
+
+<p>
+Are you ready to learn English and become a
+<strong>MY SELF HUNTER?</strong>
+</p>
+
+<p>
+Kita akan belajar tentang:
+</p>
+
+<div>
+
+<span class="badge">👋 Greetings</span>
+<span class="badge">👤 Name</span>
+<span class="badge">🎂 Age</span>
+<span class="badge">🎨 Activities</span>
+<span class="badge">🗣️ Speaking</span>
+
+</div>
+
+<h3>Masukkan Nama Kamu</h3>
+
+<input
+id="studentName"
+type="text"
+placeholder="Contoh: Aisyah"
+maxlength="30"
+>
+
+<br>
+
+<button class="btn primary" onclick="startGame()">
+🚀 MULAI PETUALANGAN
+</button>
+
+<br>
+
+<button class="btn dark" onclick="showDashboard()">
+👩‍🏫 DASHBOARD GURU
+</button>
+
+</div>
+
+</section>
+
+
+<!-- LEVEL SELECT -->
+<section id="levelScreen" class="screen">
+
+<div class="card">
+
+<div class="game-top">
+
+<div>
+<h2>🎮 MY SELF HUNTER</h2>
+<p id="welcomeText"></p>
+</div>
+
+<div>
+<span class="stat">🏆 Total: <span id="totalScore">0</span></span>
+</div>
+
+</div>
+
+<h3>Pilih Level</h3>
+
+<div id="levelGrid" class="level-grid"></div>
+
+</div>
+
+</section>
+
+
+<!-- GAME -->
+<section id="gameScreen" class="screen">
+
+<div class="card">
+
+<div class="game-top">
+
+<div class="stat">
+⭐ Level <span id="currentLevel"></span>
+</div>
+
+<div class="stat">
+❓ <span id="questionCount"></span>/10
+</div>
+
+<div class="stat">
+🏆 <span id="currentScore">0</span>
+</div>
+
+<div class="stat">
+❤️ <span id="lives">3</span>
+</div>
+
+</div>
+
+<div class="progress-box">
+
+<div id="progress" class="progress"></div>
+
+</div>
+
+<div class="question-card">
+
+<div class="question-number" id="questionNumber"></div>
+
+<div id="emoji" class="emoji-big"></div>
+
+<div id="questionText" class="question"></div>
+
+<div id="vocabInfo"></div>
+
+<button
+id="listenButton"
+class="listen-btn"
+onclick="speakCurrent()">
+🔊 Dengarkan
+</button>
+
+<div id="hint" class="hint hidden"></div>
+
+<div id="options" class="options"></div>
+
+<div id="feedback" class="feedback"></div>
+
+</div>
+
+<button
+id="nextButton"
+class="btn green hidden"
+onclick="nextQuestion()">
+➡️ LANJUT
+</button>
+
+<button
+class="btn dark"
+onclick="backToLevels()">
+⬅️ Pilih Level
+</button>
+
+</div>
+
+</section>
+
+
+<!-- RESULT -->
+<section id="resultScreen" class="screen">
+
+<div class="card result">
+
+<div class="trophy">🏆</div>
+
+<h2 id="resultTitle"></h2>
+
+<div class="score-big">
+<span id="levelScore"></span>
+</div>
+
+<p>
+poin pada level ini
+</p>
+
+<p id="resultMessage"></p>
+
+<div>
+
+<button class="btn green" onclick="nextLevel()">
+🚀 LEVEL BERIKUTNYA
+</button>
+
+<button class="btn primary" onclick="backToLevels()">
+🗺️ PILIH LEVEL
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FINAL -->
+<section id="finalScreen" class="screen">
+
+<div class="card result">
+
+<div class="trophy">
+🏆🌟🎉
+</div>
+
+<h2>MISSION COMPLETE!</h2>
+
+<p id="finalStudent"></p>
+
+<div class="score-big">
+<span id="finalScore"></span>
+</div>
+
+<p>
+TOTAL SKOR DARI 100 PERTANYAAN
+</p>
+
+<h2 id="finalMessage"></h2>
+
+<button class="btn green" onclick="backToLevels()">
+🔄 LIHAT LEVEL
+</button>
+
+<button class="btn dark" onclick="location.reload()">
+🏠 KEMBALI
+</button>
+
+</div>
+
+</section>
+
+
+<!-- DASHBOARD -->
+<section id="dashboardScreen" class="screen">
+
+<div class="card">
+
+<h2>👩‍🏫 TEACHER DASHBOARD</h2>
+
+<p>
+Rekap hasil permainan siswa pada perangkat ini.
+</p>
+
+<div class="dashboard-buttons">
+
+<button class="btn green" onclick="exportCSV()">
+📥 EXPORT CSV
+</button>
+
+<button class="btn blue" onclick="exportJSON()">
+💾 BACKUP DATA
+</button>
+
+<button class="btn red" onclick="clearAllData()">
+🗑️ HAPUS SEMUA DATA
+</button>
+
+<button class="btn dark" onclick="showScreen('startScreen')">
+⬅️ KEMBALI
+</button>
+
+</div>
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>No</th>
+<th>Nama</th>
+<th>Total</th>
+<th>Level 1</th>
+<th>Level 2</th>
+<th>Level 3</th>
+<th>Level 4</th>
+<th>Level 5</th>
+<th>Level 6</th>
+<th>Level 7</th>
+<th>Level 8</th>
+<th>Level 9</th>
+<th>Level 10</th>
+<th>Tanggal</th>
+
+</tr>
+
+</thead>
+
+<tbody id="dashboardBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   VOCABULARY
+========================================================= */
+
+const vocabulary = {
+
+    hello:{
+        word:"Hello",
+        pronunciation:"he-lo",
+        meaning:"Halo",
+        emoji:"👋"
+    },
+
+    hi:{
+        word:"Hi",
+        pronunciation:"hai",
+        meaning:"Hai",
+        emoji:"👋"
+    },
+
+    goodMorning:{
+        word:"Good morning",
+        pronunciation:"gud mor-ning",
+        meaning:"Selamat pagi",
+        emoji:"🌞"
+    },
+
+    goodAfternoon:{
+        word:"Good afternoon",
+        pronunciation:"gud af-ter-nun",
+        meaning:"Selamat siang",
+        emoji:"☀️"
+    },
+
+    name:{
+        word:"Name",
+        pronunciation:"neim",
+        meaning:"Nama",
+        emoji:"👤"
+    },
+
+    old:{
+        word:"Old",
+        pronunciation:"ould",
+        meaning:"Berumur / tua",
+        emoji:"🎂"
+    },
+
+    years:{
+        word:"Years",
+        pronunciation:"yirs",
+        meaning:"Tahun",
+        emoji:"🎂"
+    },
+
+    drawing:{
+        word:"Drawing",
+        pronunciation:"dro-ing",
+        meaning:"Menggambar",
+        emoji:"🎨"
+    },
+
+    reading:{
+        word:"Reading",
+        pronunciation:"ri-ding",
+        meaning:"Membaca",
+        emoji:"📖"
+    },
+
+    bicycle:{
+        word:"Riding a bicycle",
+        pronunciation:"rai-ding e bai-si-kel",
+        meaning:"Mengendarai sepeda",
+        emoji:"🚲"
+    },
+
+    football:{
+        word:"Playing football",
+        pronunciation:"plei-ing fut-bol",
+        meaning:"Bermain sepak bola",
+        emoji:"⚽"
+    },
+
+    toys:{
+        word:"Playing with toys",
+        pronunciation:"plei-ing with tois",
+        meaning:"Bermain dengan mainan",
+        emoji:"🧸"
+    },
+
+    cartoons:{
+        word:"Watching cartoons",
+        pronunciation:"wo-ching kar-tuns",
+        meaning:"Menonton kartun",
+        emoji:"📺"
+    },
+
+    singing:{
+        word:"Singing",
+        pronunciation:"sing-ing",
+        meaning:"Bernyanyi",
+        emoji:"🎤"
+    },
+
+    friend:{
+        word:"Friend",
+        pronunciation:"frend",
+        meaning:"Teman",
+        emoji:"🧒"
+    },
+
+    school:{
+        word:"School",
+        pronunciation:"skul",
+        meaning:"Sekolah",
+        emoji:"🏫"
+    },
+
+    afterSchool:{
+        word:"After school",
+        pronunciation:"af-ter skul",
+        meaning:"Sepulang sekolah",
+        emoji:"🎒"
+    },
+
+    nice:{
+        word:"Nice to meet you",
+        pronunciation:"nais tu mit yu",
+        meaning:"Senang bertemu denganmu",
+        emoji:"😊"
+    }
+
+};
+
+
+/* =========================================================
+   QUESTION DATABASE
+   10 LEVEL × 10 QUESTIONS
+========================================================= */
+
+const levels = [
+
+/* LEVEL 1 */
+[
+{
+q:"Which word means 'Halo'?",
+emoji:"👋",
+vocab:"hello",
+options:["Hello","Nine","Drawing","School"],
+answer:0
+},
+{
+q:"Which word means 'Hai'?",
+emoji:"👋",
+vocab:"hi",
+options:["Hi","Age","Reading","Friend"],
+answer:0
+},
+{
+q:"Teacher says: 'Good morning!' What should you say?",
+emoji:"🌞",
+vocab:"goodMorning",
+options:["Good morning!","Good night!","Bicycle!","Nine!"],
+answer:0
+},
+{
+q:"Which word means 'Selamat pagi'?",
+emoji:"🌞",
+vocab:"goodMorning",
+options:["Good morning","Good afternoon","Hello","Drawing"],
+answer:0
+},
+{
+q:"Which word means 'Nama'?",
+emoji:"👤",
+vocab:"name",
+options:["Name","Age","School","Football"],
+answer:0
+},
+{
+q:"What do you say when you meet a friend?",
+emoji:"🧒",
+options:["Hello!","Nine!","Drawing!","Old!"],
+answer:0
+},
+{
+q:"Which one is a greeting?",
+emoji:"👋",
+options:["Hi","Nine","Reading","Bicycle"],
+answer:0
+},
+{
+q:"Which word is used to say hello?",
+emoji:"👋",
+options:["Hello","Age","Name","Football"],
+answer:0
+},
+{
+q:"Complete: 'Good _____!'",
+emoji:"🌞",
+options:["morning","bicycle","drawing","nine"],
+answer:0
+},
+{
+q:"You meet your teacher in the morning. You say...",
+emoji:"👩‍🏫",
+options:["Good morning!","Good night!","I am nine bicycle.","I like name."],
+answer:0
+}
+],
+
+/* LEVEL 2 */
+[
+{
+q:"What is your name?",
+emoji:"👤",
+options:["My name is Bara.","I am drawing.","I am nine bicycle.","Good night."],
+answer:0,
+vocab:"name"
+},
+{
+q:"Complete: My _____ is Pipit.",
+emoji:"👧",
+options:["name","age","bicycle","football"],
+answer:0,
+vocab:"name"
+},
+{
+q:"Which sentence tells a person's name?",
+emoji:"👤",
+options:["My name is Putri.","I am 9 years old.","I like drawing.","Good morning."],
+answer:0
+},
+{
+q:"'My name is Bara.' What is his name?",
+emoji:"🧒",
+options:["Bara","Pipit","Putri","Sinta"],
+answer:0
+},
+{
+q:"Which answer is correct?",
+emoji:"❓",
+q2:"What is your name?",
+options:["My name is Rani.","I am drawing.","I am nine years old.","Good afternoon."],
+answer:0
+},
+{
+q:"Choose the correct sentence.",
+emoji:"✏️",
+options:["My name is Bima.","My name are Bima.","My name bicycle Bima.","My Bima is name."],
+answer:0
+},
+{
+q:"What does 'name' mean?",
+emoji:"👤",
+vocab:"name",
+options:["Nama","Umur","Teman","Sekolah"],
+answer:0
+},
+{
+q:"Complete: Hello. _____ name is Andi.",
+emoji:"👋",
+options:["My","I","You","Are"],
+answer:0
+},
+{
+q:"Which one introduces yourself?",
+emoji:"🧒",
+options:["Hello, my name is Raka.","Nine years old.","Drawing after school.","A bicycle."],
+answer:0
+},
+{
+q:"You meet a new friend. What can you say?",
+emoji:"🤝",
+options:["Hello, my name is Sinta.","I am bicycle.","Nine drawing.","Good night football."],
+answer:0
+}
+],
+
+/* LEVEL 3 */
+[
+{
+q:"How old are you?",
+emoji:"🎂",
+options:["I am 9 years old.","My name is Bara.","I like drawing.","Good morning."],
+answer:0,
+vocab:"old"
+},
+{
+q:"What does 'years' mean?",
+emoji:"🎂",
+vocab:"years",
+options:["Tahun","Nama","Teman","Gambar"],
+answer:0
+},
+{
+q:"Complete: I am 8 _____ old.",
+emoji:"🎂",
+options:["years","name","drawing","friend"],
+answer:0
+},
+{
+q:"Bara is 9 years old. How old is Bara?",
+emoji:"🧒",
+options:["9","5","7","10"],
+answer:0
+},
+{
+q:"Putri is 8 years old. Which sentence is correct?",
+emoji:"👧",
+options:["I am 8 years old.","I am 8 drawing.","My name is 8.","I like 8."],
+answer:0
+},
+{
+q:"Which question asks about age?",
+emoji:"❓",
+options:["How old are you?","What is your name?","What do you like?","Good morning?"],
+answer:0
+},
+{
+q:"Complete: How _____ are you?",
+emoji:"🎂",
+options:["old","name","drawing","school"],
+answer:0,
+vocab:"old"
+},
+{
+q:"What does 'old' mean in 'How old are you?'",
+emoji:"🎂",
+options:["Berumur","Nama","Menggambar","Teman"],
+answer:0
+},
+{
+q:"Choose the correct answer: How old are you?",
+emoji:"❓",
+options:["I am 9 years old.","My name is 9.","I like nine.","Nine is my name."],
+answer:0
+},
+{
+q:"Sinta is 7 years old. Complete: 'I am _____ years old.'",
+emoji:"👧",
+options:["7","drawing","Bara","school"],
+answer:0
+}
+],
+
+/* LEVEL 4 */
+[
+{
+q:"What is this activity? 🎨",
+emoji:"🎨",
+vocab:"drawing",
+options:["Drawing","Reading","Singing","Football"],
+answer:0
+},
+{
+q:"What is this activity? 📖",
+emoji:"📖",
+vocab:"reading",
+options:["Reading","Drawing","Singing","Bicycle"],
+answer:0
+},
+{
+q:"What is this activity? 🚲",
+emoji:"🚲",
+vocab:"bicycle",
+options:["Riding a bicycle","Drawing","Reading","Singing"],
+answer:0
+},
+{
+q:"What is this activity? ⚽",
+emoji:"⚽",
+vocab:"football",
+options:["Playing football","Reading","Drawing","Singing"],
+answer:0
+},
+{
+q:"What is this activity? 🧸",
+emoji:"🧸",
+vocab:"toys",
+options:["Playing with toys","Reading","Drawing","Football"],
+answer:0
+},
+{
+q:"What is this activity? 📺",
+emoji:"📺",
+vocab:"cartoons",
+options:["Watching cartoons","Riding a bicycle","Reading","Singing"],
+answer:0
+},
+{
+q:"What is this activity? 🎤",
+emoji:"🎤",
+vocab:"singing",
+options:["Singing","Reading","Drawing","Football"],
+answer:0
+},
+{
+q:"Which word means 'Menggambar'?",
+emoji:"🎨",
+vocab:"drawing",
+options:["Drawing","Reading","Singing","Friend"],
+answer:0
+},
+{
+q:"Which word means 'Membaca'?",
+emoji:"📖",
+vocab:"reading",
+options:["Reading","Drawing","Football","School"],
+answer:0
+},
+{
+q:"Which word means 'Bernyanyi'?",
+emoji:"🎤",
+vocab:"singing",
+options:["Singing","Drawing","Reading","Bicycle"],
+answer:0
+}
+],
+
+/* LEVEL 5 */
+[
+{
+q:"Complete: I _____ drawing.",
+emoji:"🎨",
+options:["like","am","name","old"],
+answer:0
+},
+{
+q:"Complete: I like _____ after school.",
+emoji:"📖",
+options:["reading","name","nine","old"],
+answer:0
+},
+{
+q:"Choose the correct sentence.",
+emoji:"🚲",
+options:["I like riding a bicycle.","I like name bicycle.","I am riding name.","My bicycle is nine."],
+answer:0
+},
+{
+q:"Choose the correct sentence.",
+emoji:"🎨",
+options:["I like drawing.","I drawing like.","Drawing I old.","I am drawing name."],
+answer:0
+},
+{
+q:"Complete: I like playing _____.",
+emoji:"⚽",
+options:["football","name","nine","morning"],
+answer:0
+},
+{
+q:"Complete: I love _____ cartoons.",
+emoji:"📺",
+options:["watching","name","old","nine"],
+answer:0
+},
+{
+q:"Choose the correct sentence.",
+emoji:"🎤",
+options:["I like singing.","I singing name.","I am singing age.","Singing is nine."],
+answer:0
+},
+{
+q:"Which sentence tells a favorite activity?",
+emoji:"❤️",
+options:["I like reading.","I am 9 years old.","My name is Bara.","Good morning."],
+answer:0
+},
+{
+q:"Which sentence means 'Saya suka menggambar'?",
+emoji:"🎨",
+options:["I like drawing.","I am nine.","My name is Rani.","Good morning."],
+answer:0
+},
+{
+q:"Which sentence means 'Saya suka bermain sepak bola'?",
+emoji:"⚽",
+options:["I like playing football.","I like reading.","I am nine years old.","My name is Bara."],
+answer:0
+}
+],
+
+/* LEVEL 6 */
+[
+{
+q:"Your friend says: 'What is your name?' You answer...",
+emoji:"👫",
+options:["My name is Rina.","I am drawing.","I am 9 bicycle.","Good night."],
+answer:0
+},
+{
+q:"Your friend says: 'How old are you?' You answer...",
+emoji:"🎂",
+options:["I am 9 years old.","My name is Rina.","I like drawing.","Hello."],
+answer:0
+},
+{
+q:"Your friend asks: 'What do you like doing after school?'",
+emoji:"🎨",
+options:["I like drawing.","I am nine years old.","My name is Rina.","Good morning."],
+answer:0
+},
+{
+q:"Ask your friend about their name.",
+emoji:"❓",
+options:["What is your name?","How old are you?","Do you like drawing?","Good night."],
+answer:0
+},
+{
+q:"Ask your friend about their age.",
+emoji:"🎂",
+options:["How old are you?","What is your name?","What do you like?","Hello."],
+answer:0
+},
+{
+q:"Ask your friend about their favorite activity.",
+emoji:"🎨",
+options:["What do you like doing after school?","What is your name?","How old are you?","Good morning."],
+answer:0
+},
+{
+q:"Complete the dialogue: A: What is your name? B: _____",
+emoji:"💬",
+options:["My name is Dika.","I am drawing.","I am nine years old.","Good night."],
+answer:0
+},
+{
+q:"Complete: A: How old are you? B: _____",
+emoji:"💬",
+options:["I am 9 years old.","My name is Dika.","I like reading.","Hello."],
+answer:0
+},
+{
+q:"Complete: A: What do you like? B: _____",
+emoji:"💬",
+options:["I like reading.","My name is Dika.","I am 9.","Good morning."],
+answer:0
+},
+{
+q:"Which question matches this answer: 'I like drawing.'?",
+emoji:"🎨",
+options:["What do you like doing after school?","What is your name?","How old are you?","Where is school?"],
+answer:0
+}
+],
+
+/* LEVEL 7 */
+[
+{
+q:"Find the mistake: 'My name are Bara.'",
+emoji:"🔎",
+options:["My name is Bara.","My name am Bara.","My name old Bara.","My Bara name."],
+answer:0
+},
+{
+q:"Find the mistake: 'I am 9 year old.'",
+emoji:"🔎",
+options:["I am 9 years old.","I am 9 name old.","I am 9 drawing old.","I 9 years am."],
+answer:0
+},
+{
+q:"Which sentence is correct?",
+emoji:"🔎",
+options:["I like drawing.","I likes drawing.","I drawing like.","Drawing like I."],
+answer:0
+},
+{
+q:"Which sentence is NOT correct?",
+emoji:"🔎",
+options:["My name is Putri.","I am 9 years old.","I like reading.","My name are Putri."],
+answer:3
+},
+{
+q:"Which sentence should be corrected?",
+emoji:"🔎",
+options:["I am 8 years old.","My name is Raka.","I like football.","I am name Raka."],
+answer:3
+},
+{
+q:"A student says: 'My name is 9 years old.' What is wrong?",
+emoji:"🤔",
+options:["Name and age are mixed.","The greeting is wrong.","The activity is wrong.","Nothing is wrong."],
+answer:0
+},
+{
+q:"A student says: 'I like name.' Which word should replace 'name'?",
+emoji:"🧐",
+options:["drawing","nine","morning","old"],
+answer:0
+},
+{
+q:"Which sentence correctly talks about age?",
+emoji:"🎂",
+options:["I am 9 years old.","My name is 9 years old.","I like 9 years.","9 is my name."],
+answer:0
+},
+{
+q:"Which sentence correctly talks about a hobby?",
+emoji:"❤️",
+options:["I like reading.","I am reading name.","My name is reading.","Reading is nine."],
+answer:0
+},
+{
+q:"Which sentence correctly introduces a person?",
+emoji:"👤",
+options:["Hello, my name is Bima.","Hello, my name are Bima.","Hello, I age Bima.","Hello, Bima old."],
+answer:0
+}
+],
+
+/* LEVEL 8 */
+[
+{
+q:"Bara is 9. He likes drawing. Which profile is Bara?",
+emoji:"🕵️",
+options:[
+"Bara – 9 – drawing",
+"Bara – 7 – reading",
+"Putri – 9 – football",
+"Pipit – 8 – singing"
+],
+answer:0
+},
+{
+q:"Pipit likes reading. Which activity belongs to Pipit?",
+emoji:"📖",
+options:["Reading","Football","Drawing","Singing"],
+answer:0
+},
+{
+q:"A boy is 9 years old and likes football. Which profile matches?",
+emoji:"⚽",
+options:[
+"9 years – football",
+"8 years – drawing",
+"7 years – reading",
+"9 years – singing"
+],
+answer:0
+},
+{
+q:"Who is the oldest?",
+emoji:"🎂",
+options:[
+"Bara: 9",
+"Pipit: 7",
+"Putri: 8",
+"Sinta: 6"
+],
+answer:0
+},
+{
+q:"Who likes riding a bicycle?",
+emoji:"🚲",
+options:[
+"Bara",
+"Pipit",
+"Putri",
+"Sinta"
+],
+answer:0
+},
+{
+q:"Rina is 8. Sinta is 8. What is the same?",
+emoji:"👭",
+options:[
+"Their age",
+"Their name",
+"Their picture",
+"Their school bag"
+],
+answer:0
+},
+{
+q:"Bara likes drawing. Putri likes reading. What is different?",
+emoji:"🎨",
+options:[
+"Their favorite activities",
+"Their names only",
+"The word 'I'",
+"Nothing"
+],
+answer:0
+},
+{
+q:"Which child has the same age as Bara?",
+emoji:"🎂",
+options:[
+"Pipit: 9",
+"Rina: 7",
+"Sinta: 8",
+"Putri: 6"
+],
+answer:0
+},
+{
+q:"Which profile is complete?",
+emoji:"📋",
+options:[
+"Rani – 9 – reading",
+"Rani – reading",
+"9 – drawing",
+"Bara – bicycle"
+],
+answer:0
+},
+{
+q:"Which clue helps you know a person's favorite activity?",
+emoji:"🔍",
+options:[
+"I like drawing.",
+"My name is Bara.",
+"I am 9 years old.",
+"Hello."
+],
+answer:0
+}
+],
+
+/* LEVEL 9 */
+[
+{
+q:"Bara is 9 and likes football. Rani is 9 and likes drawing. What is the same?",
+emoji:"👫",
+options:["Their age","Their hobby","Their name","Their activity"],
+answer:0
+},
+{
+q:"Bara likes football. Rani likes drawing. What is different?",
+emoji:"⚽🎨",
+options:["Their favorite activities","Their age","Their greeting","Their English"],
+answer:0
+},
+{
+q:"Pipit is 8 and likes reading. Putri is 9 and likes reading. What is the same?",
+emoji:"📖",
+options:["Their favorite activity","Their age","Their name","Their birthday"],
+answer:0
+},
+{
+q:"Pipit is 8. Putri is 9. Who is older?",
+emoji:"🎂",
+options:["Putri","Pipit","Both","We don't know"],
+answer:0
+},
+{
+q:"Bara likes drawing. You also like drawing. What can you say?",
+emoji:"🎨",
+options:[
+"We both like drawing.",
+"I am nine bicycle.",
+"My name is drawing.",
+"Good morning age."
+],
+answer:0
+},
+{
+q:"Your friend is 9. You are 9. What can you say?",
+emoji:"🎂",
+options:[
+"We are the same age.",
+"We have the same name.",
+"We are both drawing.",
+"We are bicycles."
+],
+answer:0
+},
+{
+q:"Your friend likes reading. You like football. What can you say?",
+emoji:"📖⚽",
+options:[
+"We like different activities.",
+"We have the same hobby.",
+"We have the same name.",
+"We are the same age."
+],
+answer:0
+},
+{
+q:"Which information can help you find a friend with the same hobby?",
+emoji:"🔎",
+options:[
+"I like drawing.",
+"My name is Rina.",
+"I am 9 years old.",
+"Good morning."
+],
+answer:0
+},
+{
+q:"Which two children have something in common?",
+emoji:"🤝",
+options:[
+"Bara: 9, drawing / Rina: 9, reading",
+"Bara: 9 / Rina: 7",
+"Pipit: reading / Putri: football",
+"Raka: 8 / Sinta: 6"
+],
+answer:0
+},
+{
+q:"You find a friend who likes the same activity. What should you say?",
+emoji:"😊",
+options:[
+"We both like drawing!",
+"My name are drawing.",
+"I am drawing years.",
+"Good morning bicycle."
+],
+answer:0
+}
+],
+
+/* LEVEL 10 */
+[
+{
+q:"You meet a new friend. What should you say first?",
+emoji:"👋",
+options:[
+"Hello!",
+"I am nine!",
+"Drawing!",
+"Bicycle!"
+],
+answer:0,
+vocab:"hello"
+},
+{
+q:"After saying hello, what information can you tell?",
+emoji:"👤",
+options:[
+"Your name",
+"Your password",
+"Your house number",
+"Your secret",
+],
+answer:0,
+vocab:"name"
+},
+{
+q:"Your new friend asks: 'What is your name?' What should you say?",
+emoji:"🧒",
+options:[
+"My name is Rani.",
+"I am drawing.",
+"I am nine bicycle.",
+"Good night football."
+],
+answer:0
+},
+{
+q:"Your friend asks your age. What should you say?",
+emoji:"🎂",
+options:[
+"I am 9 years old.",
+"My name is 9.",
+"I like nine.",
+"Nine is my name."
+],
+answer:0
+},
+{
+q:"Your friend asks about your hobby. What should you say?",
+emoji:"🎨",
+options:[
+"I like drawing.",
+"I am 9 years old.",
+"My name is drawing.",
+"Good morning."
+],
+answer:0
+},
+{
+q:"You and your friend are both 9 years old. What can you say?",
+emoji:"👫",
+options:[
+"We are the same age.",
+"We have the same name.",
+"We like different names.",
+"We are bicycles."
+],
+answer:0
+},
+{
+q:"You like drawing. Your friend likes drawing too. What can you say?",
+emoji:"🎨",
+options:[
+"We both like drawing.",
+"I am nine drawing.",
+"My name is drawing.",
+"We are old."
+],
+answer:0
+},
+{
+q:"Your friend likes football, but you like drawing. What can you say?",
+emoji:"⚽🎨",
+options:[
+"We like different activities.",
+"We have the same hobby.",
+"We have the same name.",
+"We are the same activity."
+],
+answer:0
+},
+{
+q:"Which introduction is the BEST?",
+emoji:"🌟",
+options:[
+"Hello. My name is Rani. I am 9 years old. I like drawing after school.",
+"Nine. Drawing. Rani.",
+"My name drawing nine.",
+"Hello bicycle age."
+],
+answer:0
+},
+{
+q:"🔥 HOTS: You meet a new friend for the first time. Which information is MOST useful to introduce yourself?",
+emoji:"🧠",
+options:[
+"Your name, age, and favorite activity",
+"Your password and house number",
+"Your secret and phone password",
+"Your friend's name only"
+],
+answer:0
+}
+
+]
+
+];
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let student = "";
+let currentLevel = 0;
+let currentQuestion = 0;
+let score = 0;
+let levelScore = 0;
+let lives = 3;
+let levelResults = Array(10).fill(0);
+let answered = false;
+
+
+/* =========================================================
+   SCREEN
+========================================================= */
+
+function showScreen(id){
+
+    document.querySelectorAll(".screen").forEach(s=>{
+        s.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function startGame(){
+
+    const name = document.getElementById("studentName").value.trim();
+
+    if(!name){
+
+        alert("Masukkan nama kamu dulu ya 😊");
+
+        return;
+    }
+
+    student = name;
+
+    currentLevel = 0;
+    currentQuestion = 0;
+    score = 0;
+    levelResults = Array(10).fill(0);
+
+    document.getElementById("welcomeText").innerHTML =
+        `Halo <strong>${escapeHTML(student)}</strong>! Ayo jadi English Hunter! 🕵️`;
+
+    updateTotalScore();
+
+    buildLevelGrid();
+
+    showScreen("levelScreen");
+}
+
+
+/* =========================================================
+   LEVEL GRID
+========================================================= */
+
+function buildLevelGrid(){
+
+    const grid = document.getElementById("levelGrid");
+
+    grid.innerHTML="";
+
+    for(let i=0;i<10;i++){
+
+        const card=document.createElement("div");
+
+        card.className="level-card";
+
+        if(i>0 && levelResults[i-1]===0){
+            card.classList.add("locked");
+        }
+
+        if(levelResults[i]>0){
+            card.classList.add("completed");
+        }
+
+        card.innerHTML=`
+
+            <div class="level-icon">
+                ${levelResults[i]>0 ? "🏆" : "⭐"}
+            </div>
+
+            <strong>LEVEL ${i+1}</strong>
+
+            <p>
+                ${levelResults[i]>0
+                ? levelResults[i]+" poin"
+                : "10 pertanyaan"}
+            </p>
+
+        `;
+
+        if(i===0 || levelResults[i-1]>0){
+
+            card.onclick=()=>startLevel(i);
+
+        }
+
+        grid.appendChild(card);
+    }
+}
+
+
+/* =========================================================
+   START LEVEL
+========================================================= */
+
+function startLevel(level){
+
+    currentLevel=level;
+    currentQuestion=0;
+    levelScore=0;
+    lives=3;
+    answered=false;
+
+    showScreen("gameScreen");
+
+    renderQuestion();
+}
+
+
+/* =========================================================
+   RENDER QUESTION
+========================================================= */
+
+function renderQuestion(){
+
+    answered=false;
+
+    const data=levels[currentLevel][currentQuestion];
+
+    document.getElementById("currentLevel").textContent=currentLevel+1;
+
+    document.getElementById("questionCount").textContent=currentQuestion+1;
+
+    document.getElementById("currentScore").textContent=levelScore;
+
+    document.getElementById("lives").textContent=lives;
+
+    document.getElementById("questionNumber").textContent=
+        `Pertanyaan ${currentQuestion+1} dari 10`;
+
+    document.getElementById("emoji").textContent=data.emoji || "🌟";
+
+    document.getElementById("questionText").textContent=data.q;
+
+    document.getElementById("feedback").textContent="";
+
+    document.getElementById("nextButton").classList.add("hidden");
+
+    document.getElementById("progress").style.width=
+        ((currentQuestion)/10*100)+"%";
+
+
+    /* VOCABULARY */
+
+    const vocabBox=document.getElementById("vocabInfo");
+
+    if(data.vocab && vocabulary[data.vocab]){
+
+        const v=vocabulary[data.vocab];
+
+        vocabBox.innerHTML=`
+
+            <div class="info-word">
+
+                <div class="word-title">
+                    ${v.emoji} ${v.word}
+                </div>
+
+                <div class="pronunciation">
+                    🗣️ Cara baca: ${v.pronunciation}
+                </div>
+
+                <div class="meaning">
+                    🇮🇩 Artinya: ${v.meaning}
+                </div>
+
+            </div>
+        `;
+
+    }else{
+
+        vocabBox.innerHTML="";
+
+    }
+
+
+    /* OPTIONS */
+
+    const options=document.getElementById("options");
+
+    options.innerHTML="";
+
+    data.options.forEach((option,index)=>{
+
+        const button=document.createElement("button");
+
+        button.className="option";
+
+        button.textContent=option;
+
+        button.onclick=()=>checkAnswer(index,button);
+
+        options.appendChild(button);
+
+    });
+
+}
+
+
+/* =========================================================
+   ANSWER
+========================================================= */
+
+function checkAnswer(index,button){
+
+    if(answered)return;
+
+    answered=true;
+
+    const data=levels[currentLevel][currentQuestion];
+
+    const buttons=document.querySelectorAll(".option");
+
+    buttons.forEach(b=>{
+        b.disabled=true;
+    });
+
+
+    if(index===data.answer){
+
+        button.classList.add("correct");
+
+        levelScore+=10;
+
+        score+=10;
+
+        document.getElementById("feedback").innerHTML=
+            "🎉 BENAR! Hebat sekali! +10 ⭐";
+
+    }else{
+
+        button.classList.add("wrong");
+
+        buttons[data.answer].classList.add("correct");
+
+        lives--;
+
+        document.getElementById("lives").textContent=lives;
+
+        document.getElementById("feedback").innerHTML=
+            "💡 Belum tepat. Yuk lihat jawaban yang benar!";
+
+    }
+
+
+    document.getElementById("currentScore").textContent=levelScore;
+
+    document.getElementById("nextButton").classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   NEXT QUESTION
+========================================================= */
+
+function nextQuestion(){
+
+    currentQuestion++;
+
+    if(currentQuestion>=10){
+
+        finishLevel();
+
+    }else{
+
+        renderQuestion();
+
+    }
+
+}
+
+
+/* =========================================================
+   FINISH LEVEL
+========================================================= */
+
+function finishLevel(){
+
+    levelResults[currentLevel]=levelScore;
+
+    saveProgress();
+
+    updateTotalScore();
+
+    document.getElementById("levelScore").textContent=levelScore;
+
+    document.getElementById("resultTitle").textContent=
+        `LEVEL ${currentLevel+1} SELESAI! 🎉`;
+
+    let message="";
+
+    if(levelScore===100){
+
+        message="🌟 PERFECT! Semua jawaban benar!";
+
+    }else if(levelScore>=80){
+
+        message="🏆 Hebat! Kamu hampir sempurna!";
+
+    }else if(levelScore>=60){
+
+        message="😊 Bagus! Terus berlatih ya!";
+
+    }else{
+
+        message="💪 Tidak apa-apa! Coba lagi!";
+
+    }
+
+    document.getElementById("resultMessage").textContent=message;
+
+    if(currentLevel===9){
+
+        saveFinalResult();
+
+        document.getElementById("finalStudent").textContent=
+            `Hebat, ${student}! Kamu sudah menyelesaikan semua level.`;
+
+        document.getElementById("finalScore").textContent=score;
+
+        document.getElementById("finalMessage").textContent=
+            getFinalMessage();
+
+        showScreen("finalScreen");
+
+    }else{
+
+        showScreen("resultScreen");
+
+    }
+
+}
+
+
+/* =========================================================
+   NEXT LEVEL
+========================================================= */
+
+function nextLevel(){
+
+    if(currentLevel<9){
+
+        startLevel(currentLevel+1);
+
+    }else{
+
+        showScreen("finalScreen");
+
+    }
+
+}
+
+
+/* =========================================================
+   BACK TO LEVELS
+========================================================= */
+
+function backToLevels(){
+
+    buildLevelGrid();
+
+    updateTotalScore();
+
+    showScreen("levelScreen");
+
+}
+
+
+/* =========================================================
+   TOTAL SCORE
+========================================================= */
+
+function updateTotalScore(){
+
+    document.getElementById("totalScore").textContent=score;
+
+}
+
+
+/* =========================================================
+   SPEECH
+========================================================= */
+
+function speakCurrent(){
+
+    const data=levels[currentLevel][currentQuestion];
+
+    let text=data.q;
+
+    if(data.vocab && vocabulary[data.vocab]){
+
+        text+=". "+vocabulary[data.vocab].word;
+
+    }
+
+    speak(text);
+
+}
+
+
+function speak(text){
+
+    if(!("speechSynthesis" in window)){
+
+        alert("Browser ini belum mendukung suara.");
+
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance=new SpeechSynthesisUtterance(text);
+
+    utterance.lang="en-US";
+
+    utterance.rate=0.75;
+
+    utterance.pitch=1.1;
+
+    window.speechSynthesis.speak(utterance);
+
+}
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+function getResults(){
+
+    return JSON.parse(
+        localStorage.getItem("mySelfHunterResults") || "[]"
+    );
+
+}
+
+
+function saveProgress(){
+
+    const results=getResults();
+
+    let existing=results.find(
+        r=>r.name.toLowerCase()===student.toLowerCase()
+    );
+
+    if(!existing){
+
+        existing={
+            name:student,
+            levels:Array(10).fill(0),
+            total:0,
+            date:new Date().toLocaleString("id-ID")
+        };
+
+        results.push(existing);
+
+    }
+
+    existing.levels[currentLevel]=levelScore;
+
+    existing.total=existing.levels.reduce(
+        (a,b)=>a+b,0
+    );
+
+    existing.date=new Date().toLocaleString("id-ID");
+
+    localStorage.setItem(
+        "mySelfHunterResults",
+        JSON.stringify(results)
+    );
+
+}
+
+
+function saveFinalResult(){
+
+    saveProgress();
+
+}
+
+
+/* =========================================================
+   FINAL MESSAGE
+========================================================= */
+
+function getFinalMessage(){
+
+    if(score>=950){
+
+        return "👑 ENGLISH SUPER HUNTER!";
+
+    }
+
+    if(score>=800){
+
+        return "🌟 AMAZING HUNTER!";
+
+    }
+
+    if(score>=600){
+
+        return "🏆 GREAT JOB!";
+
+    }
+
+    return "💪 KEEP LEARNING!";
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function showDashboard(){
+
+    renderDashboard();
+
+    showScreen("dashboardScreen");
+
+}
+
+
+function renderDashboard(){
+
+    const body=document.getElementById("dashboardBody");
+
+    body.innerHTML="";
+
+    const results=getResults();
+
+    results.sort((a,b)=>b.total-a.total);
+
+    results.forEach((r,index)=>{
+
+        const tr=document.createElement("tr");
+
+        tr.innerHTML=`
+
+            <td>${index+1}</td>
+
+            <td>${escapeHTML(r.name)}</td>
+
+            <td><strong>${r.total}</strong></td>
+
+            ${r.levels.map(x=>`<td>${x}</td>`).join("")}
+
+            <td class="small">${r.date}</td>
+
+        `;
+
+        body.appendChild(tr);
+
+    });
+
+
+    if(results.length===0){
+
+        body.innerHTML=`
+
+            <tr>
+
+                <td colspan="14">
+
+                    Belum ada data siswa.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   EXPORT CSV
+========================================================= */
+
+function exportCSV(){
+
+    const results=getResults();
+
+    if(results.length===0){
+
+        alert("Belum ada data untuk diekspor.");
+
+        return;
+
+    }
+
+    let csv=
+        "No,Nama,Total,Level 1,Level 2,Level 3,Level 4,Level 5,Level 6,Level 7,Level 8,Level 9,Level 10,Tanggal\n";
+
+    results.forEach((r,index)=>{
+
+        csv+=
+            `${index+1},"${r.name}",${r.total},${r.levels.join(",")},"${r.date}"\n`;
+
+    });
+
+    const blob=new Blob(
+        ["\ufeff"+csv],
+        {type:"text/csv;charset=utf-8;"}
+    );
+
+    const url=URL.createObjectURL(blob);
+
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download=
+        "rekap-my-self-hunter-"+new Date().toISOString().slice(0,10)+".csv";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================================================
+   EXPORT JSON BACKUP
+========================================================= */
+
+function exportJSON(){
+
+    const results=getResults();
+
+    if(results.length===0){
+
+        alert("Belum ada data.");
+
+        return;
+
+    }
+
+    const blob=new Blob(
+        [JSON.stringify(results,null,2)],
+        {type:"application/json"}
+    );
+
+    const url=URL.createObjectURL(blob);
+
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download="backup-my-self-hunter.json";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================================================
+   DELETE DATA
+========================================================= */
+
+function clearAllData(){
+
+    const confirmDelete=
+        confirm(
+            "Yakin ingin menghapus SEMUA data siswa pada perangkat ini?"
+        );
+
+    if(confirmDelete){
+
+        localStorage.removeItem("mySelfHunterResults");
+
+        renderDashboard();
+
+        alert("Semua data sudah dihapus.");
+
+    }
+
+}
+
+
+/* =========================================================
+   SECURITY / HTML ESCAPE
+========================================================= */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   KEYBOARD SHORTCUT
+========================================================= */
+
+document.addEventListener("keydown",function(e){
+
+    if(e.key==="Enter"){
+
+        const active=document.querySelector(".screen.active");
+
+        if(active && active.id==="startScreen"){
+
+            startGame();
+
+        }
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
