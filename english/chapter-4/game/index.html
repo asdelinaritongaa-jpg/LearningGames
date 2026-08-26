@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D School Explorer: My School (TBL English Game Grade 3)</title>
+    <!-- Three.js for 3D graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * { box-sizing: border-box; font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif; user-select: none; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #1a1a2e; }
+        
+        /* Canvas 3D */
+        #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* HUD Overlay */
+        #hud { position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10; display: flex; justify-content: space-between; pointer-events: none; }
+        .hud-card { background: rgba(255, 255, 255, 0.9); padding: 12px 20px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 3px solid #4e54c8; font-weight: bold; color: #2c3e50; font-size: 18px; pointer-events: auto; display: flex; align-items: center; gap: 10px; }
+        .hud-btn { background: #ff7675; color: white; border: none; padding: 8px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .hud-btn:hover { transform: scale(1.05); background: #d63031; }
+
+        /* Joysticks / Virtual Controls for 3D Movement */
+        #controls-hint { position: absolute; bottom: 20px; left: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; padding: 12px 20px; border-radius: 15px; font-size: 14px; pointer-events: none; }
+        .d-pad { position: absolute; bottom: 20px; right: 20px; z-index: 10; display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); gap: 5px; }
+        .d-btn { background: rgba(255,255,255,0.8); border: 2px solid #4e54c8; border-radius: 10px; font-weight: bold; font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; active { background: #81ecec; } }
+
+        /* Modals & Screens */
+        .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 100; display: flex; justify-content: center; align-items: center; }
+        .hidden { display: none !important; }
+
+        .modal-card { background: white; width: 90%; max-width: 650px; max-height: 90vh; border-radius: 25px; padding: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); border: 5px solid #ffbe76; overflow-y: auto; text-align: center; position: relative; animation: popIn 0.3s ease-out; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        h1, h2, h3 { color: #2c3e50; margin-top: 0; }
+        .btn-main { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: white; border: none; padding: 14px 28px; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); margin: 8px; transition: 0.2s; }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(108, 92, 231, 0.6); }
+        .btn-secondary { background: linear-gradient(135deg, #00b894, #55efc4); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #ff7675, #d63031); color: white; }
+        .btn-warning { background: linear-gradient(135deg, #fdcb6e, #ffeaa7); color: #2c3e50; }
+
+        /* Drilling Vocab & Video UI */
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 20px 0; }
+        .vocab-card { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 15px; padding: 12px; cursor: pointer; transition: 0.2s; text-align: center; }
+        .vocab-card:hover { border-color: #6c5ce7; transform: translateY(-3px); background: #f0edff; }
+        .vocab-word { font-weight: bold; color: #6c5ce7; font-size: 16px; margin-bottom: 4px; }
+        .vocab-meaning { font-size: 12px; color: #636e72; }
+        .audio-icon { font-size: 18px; margin-top: 5px; color: #00b894; }
+
+        /* Quiz UI */
+        .quiz-header { display: flex; justify-content: space-between; font-weight: bold; color: #7f8c8d; margin-bottom: 15px; font-size: 14px; }
+        .question-box { background: #eef2f7; padding: 18px; border-radius: 15px; font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 20px; border-left: 5px solid #6c5ce7; text-align: left; line-height: 1.4; }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+        .option-btn { background: #ffffff; border: 2px solid #dfe6e9; padding: 14px; border-radius: 15px; text-align: left; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; color: #2c3e50; }
+        .option-btn:hover { border-color: #6c5ce7; background: #f8f7ff; }
+        .option-btn.correct { background: #55efc4 !important; border-color: #00b894 !important; color: #006266; }
+        .option-btn.wrong { background: #ff7675 !important; border-color: #d63031 !important; color: white; }
+
+        .solo-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
+        .solo-unistructural { background: #ffeaa7; color: #d35400; }
+        .solo-multistructural { background: #74b9ff; color: #0984e3; }
+        .solo-relational { background: #a29bfe; color: #6c5ce7; }
+        .solo-extended { background: #55efc4; color: #00b894; }
+
+        /* Dashboard Guru */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; border: 1px solid #dfe6e9; text-align: center; font-size: 14px; }
+        th { background: #6c5ce7; color: white; }
+        tr:nth-child(even) { background: #f8f9fa; }
+
+        /* Video Container */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 15px; margin-bottom: 15px; border: 3px solid #6c5ce7; }
+        .video-container iframe { position: absolute; top:0; left: 0; width: 100%; height: 100%; border:0; }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD Overlay -->
+    <div id="hud">
+        <div class="hud-card">
+            <span>👤 <span id="player-display-name">Siswa</span></span>
+            <span>⭐ Level: <span id="hud-level">1</span></span>
+            <span>🏆 Skor: <span id="hud-score">0</span></span>
+        </div>
+        <div class="hud-card" style="gap: 10px;">
+            <button class="hud-btn" onclick="openVocabDrilling()">📖 Drilling Vocab</button>
+            <button class="hud-btn" style="background:#0984e3;" onclick="openTeacherDashboard()">👩‍🏫 Dashboard Guru</button>
+        </div>
+    </div>
+
+    <!-- Movement Controls Hint -->
+    <div id="controls-hint">
+        🎮 <b>Kontrol Jalan (3D):</b> Gunakan <b>W, A, S, D</b> atau <b>Panah Keyboard</b> / Touch D-Pad untuk berjalan mendekati Pos Level!
+    </div>
+
+    <!-- D-Pad for Touch devices -->
+    <div class="d-pad">
+        <div></div>
+        <div class="d-btn" id="btn-up">▲</div>
+        <div></div>
+        <div class="d-btn" id="btn-left">◄</div>
+        <div class="d-btn" id="btn-down">▼</div>
+        <div class="d-btn" id="btn-right">►</div>
+    </div>
+
+    <!-- Start / Name Input Modal -->
+    <div id="modal-start" class="modal">
+        <div class="modal-card">
+            <h1>🏫 3D School Explorer</h1>
+            <h3>Game Bahasa Inggris SD Kelas 3 (Task-Based Learning)</h3>
+            <p>Materi: <b>Chapter 4 - My School</b> (Facilities & Descriptions)</p>
+            <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+            <div style="margin: 20px 0;">
+                <label style="font-weight: bold; font-size: 16px;">Masukkan Nama Lengkap Siswa:</label><br><br>
+                <input type="text" id="input-student-name" placeholder="Contoh: Budi Santoso" style="width: 80%; padding: 12px; font-size: 16px; border-radius: 10px; border: 2px solid #6c5ce7; text-align: center;">
+            </div>
+            <button class="btn-main" onclick="startGame()">🚀 Mulai Petualangan 3D</button>
+        </div>
+    </div>
+
+    <!-- Drilling Vocab & Video Modal -->
+    <div id="modal-vocab" class="modal hidden">
+        <div class="modal-card">
+            <h2>📖 Drilling Vocabulary & Video</h2>
+            <p>Klik kartu untuk mendengarkan pengucapan (Audio Pronunciation) dan pelajari artinya!</p>
+            
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/g4kKzUaVabE" title="School Rooms English Video" allowfullscreen></iframe>
+            </div>
+
+            <div class="vocab-grid" id="vocab-container"></div>
+            
+            <button class="btn-main btn-secondary" onclick="closeModal('modal-vocab')">✅ Sudah Paham, Lanjut Main!</button>
+        </div>
+    </div>
+
+    <!-- Level Interactive Challenge Modal -->
+    <div id="modal-quiz" class="modal hidden">
+        <div class="modal-card">
+            <div class="quiz-header">
+                <span>📍 POS LEVEL <span id="quiz-level-num">1</span></span>
+                <span>Soal <span id="quiz-question-idx">1</span> dari 10</span>
+                <span>⏱️ Skor Level: <span id="quiz-current-score">0</span></span>
+            </div>
+
+            <div id="solo-type" class="solo-badge solo-unistructural">Unistructural</div>
+
+            <div class="question-box" id="question-text">Loading question...</div>
+
+            <div class="options-grid" id="options-container"></div>
+
+            <div id="feedback-box" style="margin-top: 10px; font-weight: bold; min-height: 24px;"></div>
+        </div>
+    </div>
+
+    <!-- Teacher Dashboard Modal -->
+    <div id="modal-teacher" class="modal hidden">
+        <div class="modal-card" style="max-width: 750px;">
+            <h2>👩‍🏫 Dashboard Rekap Skor Guru</h2>
+            <p>Rekapitulasi Hasil Belajar Task Based Learning Siswa SD Kelas 3</p>
+            
+            <div style="text-align: right; margin-bottom: 10px;">
+                <button class="hud-btn" style="background:#d63031;" onclick="clearTeacherScores()">🗑️ Hapus Semua Rekap Skor</button>
+            </div>
+
+            <div style="max-height: 300px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Siswa</th>
+                            <th>Level Terakhir</th>
+                            <th>Total Skor</th>
+                            <th>Status TBL</th>
+                            <th>Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teacher-table-body">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button class="btn-main" onclick="closeModal('modal-teacher')">Tutup Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA VOCABULARY DRILLING ---
+        const vocabList = [
+            { word: "Classroom", meaning: "Ruang Kelas", speech: "Classroom" },
+            { word: "Library", meaning: "Perpustakaan", speech: "Library" },
+            { word: "Canteen", meaning: "Kantin", speech: "Canteen" },
+            { word: "Toilet", meaning: "Toilet / Kamar Mandi", speech: "Toilet" },
+            { word: "Teachers' room", meaning: "Ruang Guru", speech: "Teachers room" },
+            { word: "Principal's room", meaning: "Ruang Kepala Sekolah", speech: "Principals room" },
+            { word: "Health room", meaning: "Ruang UKS", speech: "Health room" },
+            { word: "Prayer room", meaning: "Musholla", speech: "Prayer room" },
+            { word: "School yard", meaning: "Halaman Sekolah", speech: "School yard" },
+            { word: "School garden", meaning: "Taman Sekolah", speech: "School garden" },
+            { word: "In front of", meaning: "Di depan", speech: "In front of" },
+            { word: "Behind", meaning: "Di belakang", speech: "Behind" },
+            { word: "Next to / Beside", meaning: "Di sebelah / Berdampingan", speech: "Next to" },
+            { word: "Between", meaning: "Di antara (dua tempat)", speech: "Between" },
+            { word: "Clean & Big", meaning: "Bersih & Besar", speech: "Clean and Big" }
+        ];
+
+        // --- 10 LEVELS QUESTION BANK (10 Questions each = 100 Questions) ---
+        // Includes HOTS & SOLO Taxonomy (Unistructural, Multistructural, Relational, Extended Abstract)
+        const gameLevels = [
+            // Level 1: Identification & Basic Recall (Unistructural / Multistructural)
+            {
+                level: 1,
+                name: "Basic School Facilities",
+                questions: [
+                    { q: "What room is used for reading and borrowing books?", options: ["Library", "Canteen", "Toilet"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "We buy snacks and food at the ...", options: ["Prayer room", "Canteen", "Teachers' room"], ans: 1, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "There are six ... in my school for Grade 1 to 6.", options: ["classrooms", "gardens", "toilets"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Where do teachers work and rest?", options: ["Teachers' room", "School yard", "Canteen"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "If a student feels sick, they go to the ...", options: ["Health room (UKS)", "Principal's room", "Library"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "'Musholla' in English is ...", options: ["Prayer room", "Classroom", "School yard"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "The principal works in the ...", options: ["Principal's room", "Toilet", "School garden"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "We wash our hands and use the WC in the ...", options: ["Toilet", "Library", "Classroom"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Students play football in the ...", options: ["School yard", "Library", "Health room"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Beautiful flowers grow in the ...", options: ["School garden", "Canteen", "Principal's room"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" }
+                ]
+            },
+            // Level 2: Sentence Structure - There is / There are
+            {
+                level: 2,
+                name: "There is & There are",
+                questions: [
+                    { q: "Complete: '... a library in my school.'", options: ["There is", "There are", "Is there"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Complete: '... six classrooms in SD Nusantara.'", options: ["There are", "There is", "Are there"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Complete: 'There ... one health room near the canteen.'", options: ["is", "are", "am"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Complete: 'There ... two toilets at the back.'", options: ["are", "is", "be"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Which sentence is CORRECT?", options: ["There is a canteen.", "There are a canteen.", "There is six canteens."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Which sentence is CORRECT?", options: ["There are two prayer rooms.", "There is two prayer rooms.", "There are one prayer room."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Pipit says: 'There ... a principal's room.'", options: ["is", "are", "do"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Choose: 'There is ... school garden.'", options: ["a", "an", "two"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Choose: 'There are ... toilets in our school.'", options: ["three", "one", "a"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Look: 1 Library & 4 Classrooms. Complete: 'There ... four classrooms.'", options: ["are", "is", "was"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" }
+                ]
+            },
+            // Level 3: Interrogative - Is there / Are there?
+            {
+                level: 3,
+                name: "Questions & Short Answers",
+                questions: [
+                    { q: "Q: 'Is there a canteen at your school?' -> A: 'Yes, ...'", options: ["there is.", "there are.", "it are."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Q: 'Is there a swimming pool?' -> A: 'No, ...'", options: ["there is not.", "there are not.", "is not there."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Q: '... a library in your school?'", options: ["Is there", "Are there", "There is"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Q: '... two health rooms in your school?'", options: ["Are there", "Is there", "There are"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Sinta asks: 'Is there a canteen?' Pipit answers positive: ...", options: ["Yes, there is.", "No, there is not.", "Yes, there are."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Ambu asks: 'Is there a storytelling corner?' Pipit answers negative: ...", options: ["No, there is not.", "Yes, there is.", "No, there are not."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Ambu: '... a canteen open near here?'", options: ["Is there", "Are there", "There is"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Complete: 'Are there six classrooms?' -> 'Yes, ...'", options: ["there are.", "there is.", "is there."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Fill in: '... a prayer room near Class 2?'", options: ["Is there", "Are there", "Do there"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "If there is NO school yard, you answer: 'No, ...'", options: ["there is not.", "there is.", "there are."], ans: 0, solo: "Multistructural", badge: "solo-multistructural" }
+                ]
+            },
+            // Level 4: Basic Prepositions of Place
+            {
+                level: 4,
+                name: "Prepositions of Place (Basic)",
+                questions: [
+                    { q: "The library is ... the classroom. (Di sebelah)", options: ["next to", "behind", "between"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "'In front of' means ... in Indonesian.", options: ["Di depan", "Di belakang", "Di antara"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "'Behind' has the same meaning as ...", options: ["at the back of", "next to", "in front of"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "'Next to' has the same meaning as ...", options: ["beside", "behind", "in front of"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Classroom 3 is ... Classroom 4 and Health room. (Di antara)", options: ["between", "next to", "in front of"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "The parking lot is ... the canteen. (Di depan)", options: ["in front of", "behind", "between"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "The toilet is ... the classroom. (Di belakang)", options: ["behind", "in front of", "next to"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "The garden is between the library ... the toilet.", options: ["and", "or", "to"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "The futsal court is at the back of the teachers' room. 'At the back of' means ...", options: ["Di belakang", "Di samping", "Di depan"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Where is the school garden? It is ... Class 1.", options: ["in front of", "between", "under"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" }
+                ]
+            },
+            // Level 5: Adjectives & Room Situations
+            {
+                level: 5,
+                name: "School Description (Adjectives)",
+                questions: [
+                    { q: "Pak Ahmad: 'How is the prayer room?' -> Pipit: 'It is big and ...'", options: ["clean", "dirty", "noisy"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "The school garden is small, but the flowers are ...", options: ["fresh", "bad", "dark"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Opposite of 'big' is ...", options: ["small", "clean", "fresh"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Opposite of 'dirty' is ...", options: ["clean", "small", "old"], ans: 0, solo: "Unistructural", badge: "solo-unistructural" },
+                    { q: "Our library has many books and no trash. It is ...", options: ["clean and tidy", "small and dirty", "crowded"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "SD Nusantara has many trees. The air feels ...", options: ["fresh", "hot", "smelly"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "How is Pipit's school building? It is very ...", options: ["big", "tiny", "broken"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "The toilet is small but ...", options: ["clean", "full of trash", "dark"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Which adjective describes pretty plants in the garden?", options: ["Fresh flowers", "Dirty flowers", "Big toilets"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Pak Ahmad asks: 'How is your school?' -> Best response: ...", options: ["My school is clean and big.", "There is a canteen.", "I go by bike."], ans: 0, solo: "Relational", badge: "solo-relational" }
+                ]
+            },
+            // Level 6: Story Comprehension (Comic Strip 4.1 & 4.2)
+            {
+                level: 6,
+                name: "Story Reading Comprehension",
+                questions: [
+                    { q: "Who visits Pipit's house in Comic Strip 4.1?", options: ["Ambu (Her grandmother)", "Sinta", "Her teacher"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Where are Pipit and Ambu going in the afternoon?", options: ["To get some snacks near the house", "To the cinema", "To the hospital"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Does Pipit's library have a storytelling corner?", options: ["No, there is not.", "Yes, there is.", "Yes, it does."], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Where does Pipit's teacher usually tell stories?", options: ["In the classroom", "In the canteen", "In the garden"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Where is Pipit having breakfast with Pak Ahmad?", options: ["In the dining room", "In the canteen", "In the library"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "What time did Pak Ahmad tell Pipit to get ready for school?", options: ["6.30", "7.00", "6.00"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "What new facility is located next to Classroom 2?", options: ["A new prayer room", "A new canteen", "A health room"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Why does Pipit love reading books in the library?", options: ["Because it is quiet and nice", "Because she eats snacks there", "Because she plays football"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Pipit will leave for school after she finishes her ...", options: ["breakfast", "homework", "game"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "What does Ambu say when Pipit shows her big school?", options: ["'Wow! It is very big.'", "'Oh, it is small.'", "'I don't like it.'"], ans: 0, solo: "Relational", badge: "solo-relational" }
+                ]
+            },
+            // Level 7: HOTS - Analyzing Map Positions (Relational)
+            {
+                level: 7,
+                name: "HOTS: Spatial Map Analysis",
+                questions: [
+                    { q: "[MAP ANALYZING] Class 1 is between Teachers' Room and Class 2. Where is Teachers' Room?", options: ["Next to Class 1", "Behind Class 2", "In front of Garden"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "[MAP ANALYZING] Garden is between Library and Toilet. What is next to the Garden?", options: ["Library and Toilet", "Classroom and Canteen", "Only Library"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "[MAP ANALYZING] Futsal court is behind Prayer Room. Where is the Prayer Room?", options: ["In front of Futsal court", "Behind Futsal court", "Inside Canteen"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "If Canteen is next to Toilet, and Toilet is behind Classroom, where is the Canteen relative to Classroom area?", options: ["Near the back section", "Inside the principal room", "In front of gate"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Class 3 is between Class 4 and Health Room. Which room is on the left of Class 3 if Class 4 is on the right?", options: ["Health Room", "Library", "Canteen"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "If you walk from Library to Garden, and Garden is next to Toilet, where do you arrive next?", options: ["Toilet", "Classroom 1", "Health room"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Parking lot is in front of Canteen. Where do teachers park their motorcycles?", options: ["In front of the Canteen", "Inside the Library", "Behind Class 2"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "There are 6 classrooms. Class 1-3 on North side, Class 4-6 on South side. How many classrooms on South side?", options: ["3 classrooms", "6 classrooms", "2 classrooms"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "If Prayer room is big & clean, and next to Class 2, what can students do comfortably near Class 2?", options: ["Pray in a clean room", "Buy ice cream", "Play futsal indoors"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Which statement accurately connects position and facility?", options: ["The garden between library & toilet makes the surroundings fresh.", "The canteen inside library is noisy.", "Toilets are in front of principal office."], ans: 0, solo: "Relational", badge: "solo-relational" }
+                ]
+            },
+            // Level 8: HOTS - Error Identification & Correction (Relational / Extended)
+            {
+                level: 8,
+                name: "HOTS: Error Detection & Grammar",
+                questions: [
+                    { q: "Find the WRONG sentence:", options: ["There is six classrooms in my school.", "There is a canteen in my school.", "There are two toilets."], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Find the WRONG sentence:", options: ["Is there two health rooms?", "Is there a health room?", "Are there two health rooms?"], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Correct the sentence: 'The library are next to garden.'", options: ["The library is next to the garden.", "The library am next to garden.", "The libraries is next to garden."], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Why is 'There are a prayer room' incorrect?", options: ["Because 'a' means one, so we must use 'is'.", "Because prayer room is big.", "Because 'are' is for one room."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Choose the correct spelling:", options: ["Principal's office", "Prinsipal ofis", "Pricipal room"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Choose the correct spelling:", options: ["Teachers' room", "Ticher room", "Teachrs rom"], ans: 0, solo: "Multistructural", badge: "solo-multistructural" },
+                    { q: "Find the error: 'The toilet is between the library.'", options: ["'Between' needs two places/objects.", "'Is' should be 'are'.", "'Toilet' is misspelled."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Which word order is correct?", options: ["The classroom is big and clean.", "Big clean is the classroom and.", "Clean classroom big is and."], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Which sentence has correct punctuation & capital letters?", options: ["There is a library in SD Nusantara.", "there is a library in sd nusantara", "There Is A Library In Sd Nusantara."], ans: 0, solo: "Relational", badge: "solo-relational" },
+                    { q: "Identify the odd one out (Kata yang berbeda jenis):", options: ["Clean", "Canteen", "Library"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" }
+                ]
+            },
+            // Level 9: Task-Based Learning Contextual Problem Solving (Extended Abstract)
+            {
+                level: 9,
+                name: "TBL: Real World Problem Solving",
+                questions: [
+                    { q: "Budi wants to borrow an English storybook. Where should you guide Budi?", options: ["'Go to the library. It is in front of Class 2.'", "'Go to the canteen.'", "'Go to the toilet.'"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Siti fell down while running in the yard and hurt her knee. Where do you take her?", options: ["To the Health room (UKS)", "To the Principal's room", "To the Canteen"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "A visitor asks: 'Where is the Principal's room?' You answer politely: ...", options: ["'It is next to the teachers' room, Sir.'", "'No, there is not.'", "'It is dirty and small.'"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "During break time, Doni feels hungry. What sentence describes his action?", options: ["He goes to the canteen to buy snacks.", "He goes to the library to sleep.", "He goes to the prayer room to play."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Your classroom is dusty and messy. What should your class do?", options: ["Clean it together to make it clean and tidy.", "Move to the garden.", "Lock the classroom."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "You want to design a green school. What facility should be added?", options: ["A school garden with fresh flowers and trees.", "More parking lots with concrete.", "A bigger trash bin in the middle."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "If it is 12.00 PM and Muslim students want to perform Dzuhur prayer, where do they go?", options: ["To the prayer room", "To the teachers' room", "To the futsal court"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Your friend asks: 'Is there a canteen?' but your school DOES NOT have one. You answer: ...", options: ["'No, there is not. But we bring lunch boxes.'", "'Yes, there are six.'", "'There is a library.'"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "How do you present your favorite school place in English?", options: ["'My favorite place is the library because it is quiet.'", "'I don't like school.'", "'Classroom is 6.'"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Why do we need prepositions like 'next to', 'behind', and 'between'?", options: ["To describe the location of rooms accurately.", "To count the number of students.", "To spell words correctly."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" }
+                ]
+            },
+            // Level 10: Master Challenge & Synthesis (Extended Abstract - Max Difficulty)
+            {
+                level: 10,
+                name: "Master School Explorer (Synthesis)",
+                questions: [
+                    { q: "[SYNTHESIS] Read: 'My school is SD Nusantara. There are 6 classrooms. The library is next to the garden. The canteen is behind the teachers' room.' Where is the library?", options: ["Next to the garden", "Behind the teachers' room", "In front of the canteen"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "[SYNTHESIS] Based on text above: Is the canteen next to the garden?", options: ["No, it is behind the teachers' room.", "Yes, it is.", "Yes, there is."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Complete the full description: 'SD Nusantara is ... . There ... a big garden between the library and toilet.'", options: ["clean - is", "dirty - are", "small - am"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "If a school has 1 Principal room, 1 Teachers' room, 6 Classrooms, 1 Library, 1 Canteen, 2 Toilets, 1 Health room. How many facilities in total?", options: ["14 facilities", "10 facilities", "6 facilities"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Create a proper sentence combining position and adjective:", options: ["The new prayer room next to Class 2 is clean and big.", "Clean big prayer room is next Class 2 new.", "Is next to Class 2 prayer room clean big."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "A student says: 'There are a library and canteen.' Is it grammatically optimal?", options: ["Better: 'There is a library and a canteen.'", "It is 100% perfect.", "It should be 'There am'"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "How would you describe your ideal school to Pipit?", options: ["'There is a big library and a beautiful garden next to my classroom.'", "'No canteen school.'", "'School is six classroom.'"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "Analyze: Why is Pipit's school atmosphere described as 'fresh'?", options: ["Because there is a school garden with fresh flowers.", "Because of the football court.", "Because the canteen is open."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "What task is completed when you draw a school object and ask a friend to guess the room?", options: ["Draw and Guess Task (Task-Based Learning)", "Listening test", "Drilling vocabulary only"], ans: 0, solo: "Extended Abstract", badge: "solo-extended" },
+                    { q: "CONGRATULATIONS! What is the main message of Chapter 4 'My School'?", options: ["We learn to describe school rooms, their locations, and conditions proudly in English!", "We only memorized 5 words.", "English is hard."], ans: 0, solo: "Extended Abstract", badge: "solo-extended" }
+                ]
+            }
+        ];
+      // --- GAME STATE ---
+        let gameState = {
+            studentName: "Siswa",
+            currentLevel: 1,
+            totalScore: 0,
+            currentQuestionIdx: 0,
+            levelScore: 0,
+            posLevels: [] // Positions of 10 3D posts
+        };
+
+        // Speech Synthesis Setup
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop current speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85; // Slightly slower for SD grade 3
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // --- THREE.JS 3D ENGINE ---
+        let scene, camera, renderer, playerMesh;
+        let keys = { w: false, a: false, s: false, d: false, ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+        let levelPosts = [];
+
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+            
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87ceeb); // Sky blue
+            scene.fog = new THREE.FogExp2(0x87ceeb, 0.015);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(50, 80, 50);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            scene.add(dirLight);
+
+            // Ground / School Yard Ground
+            const groundGeo = new THREE.PlaneGeometry(200, 200);
+            const groundMat = new THREE.MeshLambertMaterial({ color: 0x7bed9f });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Add School Buildings (Decorations)
+            createSchoolEnvironment();
+
+            // Player (3D Character representation)
+            const playerGeo = new THREE.CylinderGeometry(0.8, 0.8, 2, 16);
+            const playerMat = new THREE.MeshStandardMaterial({ color: 0xff4757, roughness: 0.3 });
+            playerMesh = new THREE.Mesh(playerGeo, playerMat);
+            playerMesh.position.set(0, 1, 0);
+            playerMesh.castShadow = true;
+            scene.add(playerMesh);
+
+            // Create 10 Level Posts (Towers/Flags) in a path
+            createLevelPosts();
+
+            // Window Resize handling
+            window.addEventListener('resize', onWindowResize);
+
+            // Event Listeners for Keyboard
+            window.addEventListener('keydown', (e) => { if(keys.hasOwnProperty(e.key) || keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key] = true; });
+            window.addEventListener('keyup', (e) => { if(keys.hasOwnProperty(e.key) || keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key] = false; });
+
+            // Touch D-Pad Events
+            setupDPad();
+
+            // Animation Loop
+            animate();
+        }
+
+        function createSchoolEnvironment() {
+            // Main School Building (Background)
+            const bldgGeo = new THREE.BoxGeometry(60, 12, 15);
+            const bldgMat = new THREE.MeshStandardMaterial({ color: 0xf1f2f6 });
+            const bldg = new THREE.Mesh(bldgGeo, bldgMat);
+            bldg.position.set(0, 6, -35);
+            bldg.castShadow = true;
+            scene.add(bldg);
+
+            // Roof
+            const roofGeo = new THREE.ConeGeometry(45, 8, 4);
+            const roofMat = new THREE.MeshStandardMaterial({ color: 0xff6b81 });
+            const roof = new THREE.Mesh(roofGeo, roofMat);
+            roof.position.set(0, 16, -35);
+            roof.rotation.y = Math.PI / 4;
+            scene.add(roof);
+
+            // Trees around yard
+            for(let i=0; i<15; i++) {
+                const treeTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 4), new THREE.MeshStandardMaterial({color: 0x8b4513}));
+                const treeLeaves = new THREE.Mesh(new THREE.DodecahedronGeometry(2), new THREE.MeshStandardMaterial({color: 0x2ed573}));
+                const x = (Math.random() - 0.5) * 160;
+                const z = (Math.random() - 0.5) * 160;
+                if(Math.abs(x) > 15 || Math.abs(z) > 15) {
+                    treeTrunk.position.set(x, 2, z);
+                    treeLeaves.position.set(x, 5, z);
+                    scene.add(treeTrunk);
+                    scene.add(treeLeaves);
+                }
+            }
+        }
+
+        function createLevelPosts() {
+            // Path layout for 10 level posts
+            const coords = [
+                {x: 0, z: 12},
+                {x: 15, z: 15},
+                {x: 30, z: 5},
+                {x: 35, z: -15},
+                {x: 20, z: -25},
+                {x: 0, z: -20},
+                {x: -20, z: -25},
+                {x: -35, z: -15},
+                {x: -30, z: 5},
+                {x: -15, z: 15}
+            ];
+
+            coords.forEach((pos, idx) => {
+                const lvlNum = idx + 1;
+                // Post Base
+                const postGeo = new THREE.CylinderGeometry(1.2, 1.5, 4, 16);
+                const postMat = new THREE.MeshStandardMaterial({ 
+                    color: lvlNum === 1 ? 0xffa502 : 0x74b9ff,
+                    metalness: 0.2
+                });
+                const post = new THREE.Mesh(postGeo, postMat);
+                post.position.set(pos.x, 2, pos.z);
+                post.castShadow = true;
+                scene.add(post);
+
+                // Floating Level Number Orb
+                const orbGeo = new THREE.SphereGeometry(1, 16, 16);
+                const orbMat = new THREE.MeshStandardMaterial({ color: 0xff4757, emissive: 0x220000 });
+                const orb = new THREE.Mesh(orbGeo, orbMat);
+                orb.position.set(pos.x, 5, pos.z);
+                scene.add(orb);
+
+                levelPosts.push({ mesh: post, orb: orb, x: pos.x, z: pos.z, level: lvlNum });
+            });
+        }
+
+        function setupDPad() {
+            const bindBtn = (id, key) => {
+                const el = document.getElementById(id);
+                el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
+                el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
+                el.addEventListener('mousedown', () => { keys[key] = true; });
+                el.addEventListener('mouseup', () => { keys[key] = false; });
+            };
+            bindBtn('btn-up', 'w');
+            bindBtn('btn-down', 's');
+            bindBtn('btn-left', 'a');
+            bindBtn('btn-right', 'd');
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Player Movement Logic
+            const speed = 0.35;
+            let moveX = 0;
+            let moveZ = 0;
+
+            if (keys.w || keys.W || keys.ArrowUp) moveZ -= speed;
+            if (keys.s || keys.S || keys.ArrowDown) moveZ += speed;
+            if (keys.a || keys.A || keys.ArrowLeft) moveX -= speed;
+            if (keys.d || keys.D || keys.ArrowRight) moveX += speed;
+
+            playerMesh.position.x += moveX;
+            playerMesh.position.z += moveZ;
+
+            // Camera follow player
+            camera.position.x = playerMesh.position.x;
+            camera.position.y = playerMesh.position.y + 12;
+            camera.position.z = playerMesh.position.z + 18;
+            camera.lookAt(playerMesh.position);
+
+            // Rotate floating Orbs
+            levelPosts.forEach(lp => {
+                lp.orb.rotation.y += 0.03;
+            });
+
+            // Collision / Proximity check with Level Posts
+            levelPosts.forEach(lp => {
+                const dist = Math.hypot(playerMesh.position.x - lp.x, playerMesh.position.z - lp.z);
+                if (dist < 2.5) {
+                    // Check if player reaches unlocked level
+                    if (lp.level === gameState.currentLevel) {
+                        openQuizModal(lp.level);
+                        // Reposition player slightly back so it doesn't re-trigger continuously
+                        playerMesh.position.x -= moveX * 3;
+                        playerMesh.position.z -= moveZ * 3;
+                    } else if (lp.level > gameState.currentLevel) {
+                        showFloatingHint(`🔒 Level ${lp.level} Masih Terkunci! Selesaikan Level ${gameState.currentLevel} terlebih dahulu.`);
+                        playerMesh.position.x -= moveX * 2;
+                        playerMesh.position.z -= moveZ * 2;
+                    }
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function showFloatingHint(msg) {
+            const hint = document.getElementById('controls-hint');
+            hint.innerHTML = `⚠️ <b>${msg}</b>`;
+            setTimeout(() => {
+                hint.innerHTML = `🎮 <b>Kontrol Jalan (3D):</b> Gunakan <b>W, A, S, D</b> atau <b>Panah Keyboard</b> / Touch D-Pad untuk berjalan mendekati Pos Level!`;
+            }, 3000);
+        }
+
+        // --- GAME CONTROL LOGIC ---
+        function startGame() {
+            const nameInput = document.getElementById('input-student-name').value.trim();
+            if (!nameInput) {
+                alert("Silakan masukkan nama siswa terlebih dahulu!");
+                return;
+            }
+            gameState.studentName = nameInput;
+            document.getElementById('player-display-name').innerText = nameInput;
+            closeModal('modal-start');
+            
+            // Open Vocabulary Drilling automatically at start as introduction
+            openVocabDrilling();
+        }
+
+        function openVocabDrilling() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = "";
+            
+            vocabList.forEach(v => {
+                const card = document.createElement('div');
+                card.className = 'vocab-card';
+                card.onclick = () => speakText(v.speech);
+                card.innerHTML = `
+                    <div class="vocab-word">${v.word}</div>
+                    <div class="vocab-meaning">${v.meaning}</div>
+                    <div class="audio-icon">🔊 Dengarkan</div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('modal-vocab').classList.remove('hidden');
+        }
+
+        function openQuizModal(levelNum) {
+            gameState.currentQuestionIdx = 0;
+            gameState.levelScore = 0;
+            document.getElementById('quiz-level-num').innerText = levelNum;
+            document.getElementById('quiz-current-score').innerText = 0;
+            loadQuestion();
+            document.getElementById('modal-quiz').classList.remove('hidden');
+        }
+
+        function loadQuestion() {
+            const levelData = gameLevels[gameState.currentLevel - 1];
+            const qData = levelData.questions[gameState.currentQuestionIdx];
+
+            document.getElementById('quiz-question-idx').innerText = gameState.currentQuestionIdx + 1;
+            document.getElementById('question-text').innerText = qData.q;
+            
+            // SOLO Badge setup
+            const badgeEl = document.getElementById('solo-type');
+            badgeEl.innerText = `Taksonomi SOLO: ${qData.solo}`;
+            badgeEl.className = `solo-badge ${qData.badge}`;
+
+            document.getElementById('feedback-box').innerText = "";
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = "";
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                btn.onclick = () => checkAnswer(idx, qData.ans, btn);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIdx, correctIdx, btnEl) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.onclick = null); // Disable further clicks
+
+            if (selectedIdx === correctIdx) {
+                btnEl.classList.add('correct');
+                document.getElementById('feedback-box').innerHTML = "<span style='color:#00b894;'>🎉 Benar! Great job! (+10 Point)</span>";
+                gameState.levelScore += 10;
+                gameState.totalScore += 10;
+                document.getElementById('quiz-current-score').innerText = gameState.levelScore;
+                document.getElementById('hud-score').innerText = gameState.totalScore;
+                speakText("Correct! Good job!");
+            } else {
+                btnEl.classList.add('wrong');
+                buttons[correctIdx].classList.add('correct');
+                document.getElementById('feedback-box').innerHTML = "<span style='color:#d63031;'>❌ Kurang tepat. Tetap semangat!</span>";
+                speakText("Try again next time.");
+            }
+
+            setTimeout(() => {
+                gameState.currentQuestionIdx++;
+                if (gameState.currentQuestionIdx < 10) {
+                    loadQuestion();
+                } else {
+                    finishLevel();
+                }
+            }, 1800);
+        }
+
+        function finishLevel() {
+            alert(`🌟 Selamat! Kamu menyelesaikan Level ${gameState.currentLevel} dengan Skor Level: ${gameState.levelScore}/100!`);
+            
+            // Save Teacher Score to LocalStorage
+            saveScoreToTeacherDashboard();
+
+            if (gameState.currentLevel < 10) {
+                gameState.currentLevel++;
+                document.getElementById('hud-level').innerText = gameState.currentLevel;
+                // Update post colors in 3D
+                levelPosts[gameState.currentLevel - 1].mesh.material.color.setHex(0xffa502);
+            } else {
+                alert("🏆 LUAR BIASA! Kamu telah menyelesaikan SELURUH LEVEL 1-10! Kamu adalah Master School Explorer!");
+            }
+            
+            closeModal('modal-quiz');
+        }
+
+        // --- TEACHER DASHBOARD LOGIC ---
+        function saveScoreToTeacherDashboard() {
+            let records = JSON.parse(localStorage.getItem('tbl_school_game_scores') || "[]");
+            
+            // Check if student already exists
+            const existingIdx = records.findIndex(r => r.name.toLowerCase() === gameState.studentName.toLowerCase());
+            const newRecord = {
+                name: gameState.studentName,
+                level: gameState.currentLevel,
+                score: gameState.totalScore,
+                status: gameState.totalScore >= 700 ? "Sangat Baik (Mastered)" : "Cukup (Learning)",
+                date: new Date().toLocaleDateString('id-ID')
+            };
+
+            if (existingIdx >= 0) {
+                records[existingIdx] = newRecord;
+            } else {
+                records.push(newRecord);
+            }
+
+            localStorage.setItem('tbl_school_game_scores', JSON.stringify(records));
+        }
+
+        function openTeacherDashboard() {
+            const tableBody = document.getElementById('teacher-table-body');
+            tableBody.innerHTML = "";
+
+            let records = JSON.parse(localStorage.getItem('tbl_school_game_scores') || "[]");
+
+            if (records.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6">Belum ada rekap data skor siswa.</td></tr>`;
+            } else {
+                records.forEach((r, idx) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${idx + 1}</td>
+                        <td><b>${htmlEscape(r.name)}</b></td>
+                        <td>Level ${r.level}</td>
+                        <td><b style="color:#6c5ce7;">${r.score}</b></td>
+                        <td><span style="padding: 3px 8px; border-radius: 5px; background:${r.score >= 700 ? '#55efc4':'#ffeaa7'}">${r.status}</span></td>
+                        <td>${r.date}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            document.getElementById('modal-teacher').classList.remove('hidden');
+        }
+
+        function clearTeacherScores() {
+            if (confirm("Apakah Guru yakin ingin MENGHAPUS SEMUA data rekap skor siswa?")) {
+                localStorage.removeItem('tbl_school_game_scores');
+                openTeacherDashboard();
+                alert("Data rekap skor berhasil dihapus!");
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function htmlEscape(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Init 3D Canvas on Load
+        window.onload = () => {
+            init3D();
+        };
+    </script>
+</body>
+</html>
