@@ -1,1795 +1,1167 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Treasure Quest - Chapter 3 My Family Time</title>
-
-<style>
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    font-family:"Trebuchet MS",Arial,sans-serif;
-    background:
-        linear-gradient(rgba(93,183,230,.35),rgba(255,222,140,.45)),
-        #8bdcff;
-    color:#26334d;
-}
-
-header{
-    background:linear-gradient(135deg,#4b2b8f,#8257cf);
-    color:white;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 5px 20px #0004;
-}
-
-header h1{
-    margin:0;
-    font-size:clamp(25px,5vw,45px);
-}
-
-header p{
-    margin:7px 0 0;
-}
-
-.container{
-    max-width:1150px;
-    margin:auto;
-    padding:18px;
-}
-
-.card{
-    background:rgba(255,255,255,.96);
-    border-radius:25px;
-    padding:22px;
-    margin-bottom:18px;
-    box-shadow:0 10px 30px rgba(40,30,70,.18);
-}
-
-.hero{
-    text-align:center;
-    font-size:70px;
-    animation:float 2s infinite ease-in-out;
-}
-
-@keyframes float{
-    50%{transform:translateY(-10px);}
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:15px;
-}
-
-input{
-    width:100%;
-    padding:13px;
-    border:2px solid #ddd;
-    border-radius:12px;
-    margin-top:6px;
-    font-size:16px;
-}
-
-button{
-    border:none;
-    padding:12px 18px;
-    margin:5px;
-    border-radius:14px;
-    background:#6945bd;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    font-size:15px;
-}
-
-button:hover{
-    transform:translateY(-2px);
-}
-
-button.gold{
-    background:#e6a000;
-}
-
-button.green{
-    background:#24985e;
-}
-
-button.red{
-    background:#d95168;
-}
-
-button.gray{
-    background:#68758a;
-}
-
-.hidden{
-    display:none!important;
-}
-
-.center{
-    text-align:center;
-}
-
-.stats{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.pill{
-    background:#eee8ff;
-    padding:9px 14px;
-    border-radius:50px;
-    font-weight:bold;
-}
-
-.progress{
-    margin-top:12px;
-    height:15px;
-    background:#ddd;
-    border-radius:20px;
-    overflow:hidden;
-}
-
-.progress-bar{
-    height:100%;
-    width:0;
-    background:linear-gradient(90deg,#ffc72c,#ff8b38);
-    transition:.5s;
-}
-
-/* MAP */
-
-.map{
-    height:440px;
-    position:relative;
-    overflow:hidden;
-    border:6px solid white;
-    border-radius:25px;
-    background:
-        linear-gradient(
-            #82d8ff 0 28%,
-            #68bf68 28% 100%
-        );
-    box-shadow:inset 0 0 0 4px #6a5294;
-}
-
-.house{
-    position:absolute;
-    font-size:70px;
-}
-
-.house1{
-    left:8%;
-    top:45%;
-}
-
-.house2{
-    left:43%;
-    top:25%;
-}
-
-.house3{
-    right:8%;
-    top:48%;
-}
-
-.tree{
-    position:absolute;
-    font-size:55px;
-}
-
-.tree1{
-    left:3%;
-    bottom:4%;
-}
-
-.tree2{
-    right:3%;
-    bottom:4%;
-}
-
-.path{
-    position:absolute;
-    left:15%;
-    right:15%;
-    top:67%;
-    height:45px;
-    background:#d4aa72;
-    border-radius:50%;
-    transform:rotate(-7deg);
-}
-
-.treasure{
-    position:absolute;
-    font-size:55px;
-    background:transparent;
-    padding:0;
-    animation:pulse 1.3s infinite;
-    text-shadow:0 5px 5px #0005;
-}
-
-@keyframes pulse{
-    50%{
-        transform:scale(1.18);
-    }
-}
-
-.t1{
-    left:20%;
-    top:57%;
-}
-
-.t2{
-    left:48%;
-    top:44%;
-}
-
-.t3{
-    right:18%;
-    top:60%;
-}
-
-.t4{
-    left:36%;
-    bottom:8%;
-}
-
-.t5{
-    right:40%;
-    bottom:9%;
-}
-
-/* VOCAB */
-
-.vocab{
-    line-height:2;
-    font-size:18px;
-}
-
-.word{
-    font-weight:bold;
-    color:#5c3ba0;
-}
-
-.pron{
-    color:#d47700;
-}
-
-.meaning{
-    color:#27734d;
-}
-
-/* QUESTION */
-
-.question-option{
-    display:block;
-    width:100%;
-    text-align:left;
-    background:#f7f4ff;
-    color:#26334d;
-    border:2px solid #ddd;
-}
-
-.question-option.correct{
-    background:#d9f6e5;
-    border-color:#26985d;
-}
-
-.question-option.wrong{
-    background:#ffe0e7;
-    border-color:#d95168;
-}
-
-.feedback{
-    padding:14px;
-    margin-top:10px;
-    border-radius:15px;
-    font-weight:bold;
-}
-
-.feedback.good{
-    background:#d9f6e5;
-}
-
-.feedback.bad{
-    background:#ffe0e7;
-}
-
-/* DASHBOARD */
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,td{
-    padding:9px;
-    border-bottom:1px solid #ddd;
-    text-align:left;
-    font-size:13px;
-}
-
-th{
-    background:#eee8ff;
-}
-
-.table-wrap{
-    overflow:auto;
-}
-
-.small{
-    color:#697589;
-    font-size:13px;
-}
-
-/* DRAG MATCH */
-
-.drag-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.drag-item,
-.drop-zone{
-    padding:13px;
-    margin:7px;
-    border-radius:13px;
-    border:2px dashed #9b88c5;
-    background:#faf8ff;
-}
-
-.drop-zone{
-    min-height:55px;
-}
-
-.drop-zone.correct-match{
-    background:#d9f6e5;
-    border-style:solid;
-}
-
-@media(max-width:650px){
-    .map{
-        height:350px;
-    }
-
-    .house{
-        font-size:50px;
-    }
-
-    .treasure{
-        font-size:45px;
-    }
-
-    .drag-grid{
-        grid-template-columns:1fr;
-    }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-    <h1>🏴‍☠️ Treasure Quest 💎</h1>
-    <p>Chapter 3 — My Family Time</p>
-    <p>English for Nusantara Kids — SD/MI Kelas III</p>
-</header>
-
-<div class="container">
-
-<!-- START -->
-
-<section id="startPage" class="card">
-
-<div class="hero">
-🗺️ 💎 🏠
-</div>
-
-<h2 class="center">
-Petualangan Mencari Harta Karun
-</h2>
-
-<p class="center">
-Selamat datang, Little Treasure Hunter!
-Jelajahi rumah, temukan harta karun,
-latih pengucapan Bahasa Inggris,
-dan selesaikan 100 tantangan.
-</p>
-
-<div class="grid">
-
-<div>
-<label>
-<b>👦 Nama Siswa</b>
-</label>
-<input
-id="studentName"
-placeholder="Masukkan nama siswa">
-</div>
-
-<div>
-<label>
-<b>🏫 Nama Sekolah</b>
-</label>
-<input
-id="schoolName"
-placeholder="Masukkan nama sekolah">
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>🎯 Misi Permainan</h3>
-
-<ul>
-<li>10 Level</li>
-<li>Setiap level 10 pertanyaan</li>
-<li>Total 100 pertanyaan</li>
-<li>Drilling vocabulary sebelum soal</li>
-<li>Pengucapan Bahasa Inggris 🔊</li>
-<li>Arti Bahasa Indonesia</li>
-<li>Treasure Hunt Map</li>
-<li>Drag & Match</li>
-<li>SOLO Taxonomy</li>
-<li>Critical Thinking</li>
-<li>HOTS Level 10</li>
-<li>Dashboard Guru</li>
-<li>Download rekapan CSV</li>
-</ul>
-
-</div>
-
-<div class="center">
-
-<button onclick="startGame()">
-🚀 MULAI PETUALANGAN
-</button>
-
-<button class="gray" onclick="openDashboard()">
-👩‍🏫 DASHBOARD GURU
-</button>
-
-</div>
-
-</section>
-
-
-<!-- GAME -->
-
-<section id="gamePage" class="hidden">
-
-<div class="card">
-
-<div class="stats">
-
-<span class="pill">
-👤 <span id="playerName"></span>
-</span>
-
-<span class="pill">
-⭐ Skor: <span id="score">0</span>
-</span>
-
-<span class="pill">
-💎 Harta: <span id="treasureCount">0</span>/100
-</span>
-
-<span class="pill">
-🏆 Level: <span id="levelNumber">1</span>/10
-</span>
-
-</div>
-
-<div class="progress">
-<div id="progressBar" class="progress-bar"></div>
-</div>
-
-</div>
-
-
-<!-- DRILL -->
-
-<div id="drillPage" class="card">
-
-<h2>
-🎙️ Treasure Vocabulary Training
-</h2>
-
-<p>
-Sebelum masuk ke peta, lakukan drilling terlebih dahulu.
-Klik 🔊 untuk mendengar pengucapan.
-</p>
-
-<div id="vocabulary"></div>
-
-<br>
-
-<button onclick="drillAll()">
-🔊 DRILLING SEMUA
-</button>
-
-<button class="gold" onclick="enterMap()">
-🗺️ MASUK KE PETA
-</button>
-
-</div>
-
-
-<!-- MAP -->
-
-<div id="mapPage" class="card hidden">
-
-<h2>
-🗺️ Treasure Island
-</h2>
-
-<p>
-Cari 💎 yang sesuai dengan posisi harta level ini.
-</p>
-
-<div class="map">
-
-<div class="path"></div>
-
-<div class="house house1">🏠</div>
-<div class="house house2">🏡</div>
-<div class="house house3">🏠</div>
-
-<div class="tree tree1">🌳</div>
-<div class="tree tree2">🌴</div>
-
-<button
-class="treasure t1"
-onclick="findTreasure(0)">
-💎
-</button>
-
-<button
-class="treasure t2"
-onclick="findTreasure(1)">
-💎
-</button>
-
-<button
-class="treasure t3"
-onclick="findTreasure(2)">
-💎
-</button>
-
-<button
-class="treasure t4"
-onclick="findTreasure(3)">
-💎
-</button>
-
-<button
-class="treasure t5"
-onclick="findTreasure(4)">
-💎
-</button>
-
-</div>
-
-</div>
-
-
-<!-- QUESTION -->
-
-<div
-id="questionPage"
-class="card hidden">
-</div>
-
-
-<!-- FINISH -->
-
-<div
-id="finishPage"
-class="card hidden center">
-</div>
-
-</section>
-
-
-<!-- DASHBOARD -->
-
-<section id="dashboardPage" class="hidden">
-
-<div class="card">
-
-<h2>
-👩‍🏫 Teacher Dashboard
-</h2>
-
-<p class="small">
-Dashboard ini menyimpan data pada browser perangkat guru.
-Download CSV terlebih dahulu sebelum menghapus data.
-</p>
-
-<div class="stats">
-
-<span class="pill">
-👥 Siswa:
-<span id="totalStudents">0</span>
-</span>
-
-<span class="pill">
-📊 Rata-rata:
-<span id="averageScore">0%</span>
-</span>
-
-</div>
-
-<br>
-
-<div class="table-wrap">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Waktu</th>
-<th>Nama</th>
-<th>Sekolah</th>
-<th>Skor</th>
-<th>Persentase</th>
-<th>SOLO</th>
-<th>Critical Thinking</th>
-
-</tr>
-
-</thead>
-
-<tbody id="dashboardRows">
-</tbody>
-
-</table>
-
-</div>
-
-<br>
-
-<button
-class="green"
-onclick="downloadCSV()">
-⬇️ DOWNLOAD REKAP CSV
-</button>
-
-<button
-class="red"
-onclick="deleteDashboard()">
-🗑️ HAPUS DATA
-</button>
-
-<button
-class="gray"
-onclick="backHome()">
-← KEMBALI
-</button>
-
-</div>
-
-</section>
-
-</div>
-
-
-<script>
-
-/* ==========================================
-   VOCABULARY
-========================================== */
-
-const vocabularyData = [
-
-[
-["cooking","ku-king","memasak"],
-["mopping the floor","mop-ping de flo-or","mengepel lantai"],
-["washing the dishes","wo-shing de di-shiz","mencuci piring"],
-["sweeping the floor","swi-ping de flo-or","menyapu lantai"],
-["making the bed","mei-king de bed","merapikan tempat tidur"]
-],
-
-[
-["gardening","gar-de-ning","berkebun"],
-["washing clothes","wo-shing klouths","mencuci pakaian"],
-["cleaning the house","kli-ning de haus","membersihkan rumah"],
-["What are you doing?","wot ar yu du-ing","Kamu sedang apa?"],
-["I am making the bed","ai em mei-king de bed","Saya sedang merapikan tempat tidur"]
-],
-
-[
-["living room","li-ving rum","ruang keluarga"],
-["bedroom","bed-rum","kamar tidur"],
-["kitchen","ki-chen","dapur"],
-["bathroom","bath-rum","kamar mandi"],
-["garden","gar-den","kebun"]
-],
-
-[
-["backyard","bek-yard","halaman belakang"],
-["Where are you?","wer ar yu","Kamu di mana?"],
-["I am in the kitchen","ai em in de ki-chen","Saya di dapur"],
-["She is in the bedroom","shi iz in de bed-rum","Dia berada di kamar tidur"],
-["He is in the backyard","hi iz in de bek-yard","Dia berada di halaman belakang"]
-],
-
-[
-["sweeping the floor","swi-ping de flo-or","menyapu lantai"],
-["gardening","gar-de-ning","berkebun"],
-["washing the dishes","wo-shing de di-shiz","mencuci piring"],
-["mopping the floor","mop-ping de flo-or","mengepel lantai"],
-["making the bed","mei-king de bed","merapikan tempat tidur"]
-],
-
-[
-["family","fe-mi-li","keluarga"],
-["chores","chorz","pekerjaan rumah"],
-["diligent","di-li-jent","rajin"],
-["Come in","kam in","Silakan masuk"],
-["Welcome to my home","wel-kam tu mai hom","Selamat datang di rumahku"]
-],
-
-[
-["room","rum","ruangan"],
-["position","po-zi-shen","posisi"],
-["find","faind","menemukan"],
-["different","di-fe-rent","berbeda"],
-["similar","si-mi-ler","mirip"]
-],
-
-[
-["first","ferst","pertama"],
-["then","den","kemudian"],
-["because","bi-koz","karena"],
-["where","wer","di mana"],
-["activity","ek-ti-vi-ti","kegiatan"]
-],
-
-[
-["clue","klu","petunjuk"],
-["compare","kem-per","membandingkan"],
-["explain","eks-plein","menjelaskan"],
-["choose","chuz","memilih"],
-["reason","ri-zen","alasan"]
-],
-
-[
-["solve","solv","memecahkan"],
-["evidence","e-vi-dens","bukti"],
-["reasoning","ri-ze-ning","penalaran"],
-["solution","se-lu-shen","solusi"],
-["teamwork","tim-werk","kerja sama"]
-]
-
-];
-
-
-/* ==========================================
-   QUESTION BANK
-   10 LEVEL × 10
-========================================== */
-
-const questions = [
-
-/* LEVEL 1 */
-
-[
-["What is Pipit doing?","She is sweeping the floor.","She is cooking.","She is gardening.","She is making the bed."],
-["What does cooking mean?","memasak","menyapu","mencuci","berkebun"],
-["Choose the correct sentence.","I am mopping the floor.","I am mop the floor.","I mopping floor.","I am mopped floor."],
-["What are you doing?","I am washing the dishes.","I is washing dishes.","I washing dishes.","I am wash dishes."],
-["Which activity uses a broom?","sweeping the floor","cooking","making the bed","gardening"],
-["What is making the bed?","merapikan tempat tidur","mencuci piring","memasak","menyapu lantai"],
-["Which is a home activity?","washing the dishes","bedroom","bathroom","backyard"],
-["He is ___ the floor.","mopping","mop","mopped","mops"],
-["They are ___ the bed.","making","make","makes","made"],
-["Washing the dishes means...","mencuci piring","memasak","mengepel","berkebun"]
-],
-
-/* LEVEL 2 */
-
-[
-["Bapak is gardening. What is he doing?","He is gardening.","He is cooking.","He is sleeping.","He is making the bed."],
-["Washing clothes means...","mencuci pakaian","mencuci piring","menyapu lantai","berkebun"],
-["She is washing dishes. She means...","perempuan","laki-laki","mereka","saya"],
-["What are they doing?","They are gardening.","They is gardening.","They am gardening.","They gardening."],
-["Choose the correct sentence.","She is making the bed.","She are making the bed.","She making the bed.","She is make the bed."],
-["Water and soap are used for...","washing clothes","sweeping","gardening","making the bed"],
-["Cleaning the house means...","membersihkan rumah","membangun rumah","meninggalkan rumah","mencari rumah"],
-["What are you doing?","I am cooking.","I cooking.","I is cooking.","I are cooking."],
-["Which activity uses plants?","gardening","washing dishes","mopping","making bed"],
-["Putri is ___ the bed.","making","make","made","makes"]
-],
-
-/* LEVEL 3 */
-
-[
-["Where do we cook?","kitchen","bedroom","bathroom","backyard"],
-["Where do we sleep?","bedroom","kitchen","garden","living room"],
-["Living room means...","ruang keluarga","kamar tidur","dapur","kamar mandi"],
-["Which room is for taking a bath?","bathroom","kitchen","bedroom","backyard"],
-["Where can you grow flowers?","garden","bathroom","bedroom","kitchen"],
-["Which is NOT a part of the house?","cooking","bedroom","kitchen","bathroom"],
-["Your sister is in the ___.","bedroom","cook","gardened","washing"],
-["Which place is outside and behind the house?","backyard","kitchen","bedroom","bathroom"],
-["If you are cooking, where are you likely?","kitchen","bedroom","bathroom","living room"],
-["Bedroom means...","kamar tidur","dapur","kebun","ruang keluarga"]
-],
-
-/* LEVEL 4 */
-
-[
-["Where are you?","I am in the kitchen.","I is kitchen.","I am kitchen.","I in the kitchen."],
-["Where is your sister?","She is in the bedroom.","She are bedroom.","She in bedroom.","She is bedroom."],
-["Backyard means...","halaman belakang","ruang keluarga","dapur","kamar mandi"],
-["Choose the correct question.","Where is your brother?","Where your brother?","Where are your brother?","Where is brother are?"],
-["Putra is in the bedroom. What can we infer?","He is in the sleeping room.","He is in the kitchen.","He is in the garden.","He is in the bathroom."],
-["Emak is washing dishes. Where is she likely?","kitchen","bedroom","backyard","garden"],
-["Choose the correct pair.","garden — area for gardening","bedroom — cooking","kitchen — sleeping","bathroom — gardening"],
-["He is ___ the backyard.","in","on","at the","to"],
-["She is ___ the bedroom.","in","on","to","from"],
-["Gardening fits best in...","garden","bathroom","bedroom","kitchen"]
-],
-
-/* LEVEL 5 */
-
-[
-["Sweeping the floor means...","menyapu lantai","memasak","mencuci piring","merapikan tempat tidur"],
-["Gardening means...","berkebun","mengepel","memasak","mencuci pakaian"],
-["Washing the dishes means...","mencuci piring","menyapu","berkebun","merapikan"],
-["Saya sedang mengepel lantai.","I am mopping the floor.","I am sweeping the floor.","I am cooking.","I am gardening."],
-["Mereka sedang merapikan tempat tidur.","They are making the bed.","They are washing dishes.","They are gardening.","They are cooking."],
-["They are gardening means...","Mereka sedang berkebun.","Mereka sedang memasak.","Mereka sedang tidur.","Mereka sedang mencuci."],
-["___ is washing the dishes.","She","They","I are","We is"],
-["___ are making the bed.","They","He","She","It"],
-["Which activity fits a bedroom?","making the bed","washing the dishes","cooking","gardening"],
-["Mopping means...","mengepel","memasak","mencuci","berkebun"]
-],
-
-/* LEVEL 6 */
-
-[
-["Pipit is sweeping. What is she doing?","She is sweeping.","She is cooking.","She is gardening.","She is sleeping."],
-["Emak washes dishes. Where is she likely?","kitchen","bedroom","garden","backyard"],
-["Bapak is mopping. Choose the sentence.","He is mopping the floor.","He is gardening.","She is mopping.","They are mopping."],
-["Putra and Putri are making the bed. Pronoun?","They","He","She","I"],
-["Come in! invites Mita to...","enter the house","leave the house","cook outside","go to school"],
-["Diligent means...","rajin","malas","marah","sedih"],
-["Who washes the dishes?","Pipit's mother","Pipit","Mita","Pipit's father"],
-["What is the family doing?","cleaning/doing chores","playing football","going shopping","sleeping"],
-["Which statement is supported?","Family members share chores.","Only children clean.","Only father works.","Nobody helps."],
-["Why is sharing chores good?","It helps the family work together.","It makes the house dirty.","It stops helping.","It makes chores impossible."]
-],
-
-/* LEVEL 7 */
-
-[
-["You see a bed. Which room?","bedroom","kitchen","bathroom","garden"],
-["You see a sink with plates. Which room?","kitchen","bedroom","backyard","garden"],
-["Two pictures show cleaning. What can you compare?","locations and activities","names only","weather only","nothing"],
-["Best clue for gardening?","plants and a garden tool","pillow","bathtub","stove"],
-["Best clue for cooking?","stove and food","bed and pillow","shower","flowers only"],
-["Sentence says kitchen but picture shows bed. What should you do?","check the evidence and correct the mismatch","accept it","delete picture","change English randomly"],
-["Which is a location?","backyard","cooking","sweeping","washing"],
-["Which is an activity?","mopping","bedroom","kitchen","garden"],
-["Which pair does NOT logically match?","bedroom — washing dishes","kitchen — cooking","garden — gardening","bedroom — making the bed"],
-["Why are pictures useful?","They give visual clues for meaning.","They remove thinking.","They always give answers.","They change words."]
-],
-
-/* LEVEL 8 */
-
-[
-["Arrange: I / am / cooking.","I am cooking.","Am I cooking.","I cooking am.","Cooking I am."],
-["Arrange: she / is / bedroom / in.","She is in the bedroom.","She bedroom is in.","In she is bedroom.","She is bedroom in."],
-["Which word connects a reason?","because","where","bedroom","garden"],
-["I am in the kitchen ___ I am cooking.","because","where","bedroom","then"],
-["What comes first?","first","because","where","backyard"],
-["What can come after first?","then","kitchen","who","bedroom"],
-["Which sentence tells location?","I am in the living room.","I am cooking.","I am sweeping.","They are gardening."],
-["Which sentence tells an activity?","She is washing dishes.","She is in the bedroom.","He is in the garden.","They are in the kitchen."],
-["First I cook, ___ I wash the dishes.","then","where","because","room"],
-["Why do we use sentence patterns?","They help us communicate clearly.","They make words disappear.","They stop speaking.","They change every meaning."]
-],
-
-/* LEVEL 9 */
-
-[
-["Guests are arriving. What should the family clean first?","the main living area","hide all plates","leave the house","make the backyard dirty"],
-["Plants and soil are clues. Best location?","garden","kitchen","bedroom","bathroom"],
-["Best evidence that Bapak is gardening?","plants and a garden tool","a bed","plates","a bathtub"],
-["Picture shows cooking in kitchen but sentence says bedroom. Best response?","Check the picture and revise the sentence.","Always accept it.","Picture must be wrong.","Ignore evidence."],
-["Two children share chores. Best conclusion?","They are cooperating.","They are cooking.","They are in the bathroom.","They are not helping."],
-["Which activity is least likely in the kitchen?","making the bed","washing dishes","cooking","cleaning"],
-["Which sentence gives place and activity?","My mother is in the kitchen. She is washing the dishes.","My mother.","Kitchen.","Washing."],
-["What is a fair way to finish chores faster?","Divide chores among people and places.","One person does everything.","Avoid chores.","Stop randomly."],
-["Strongest clue for identifying a room?","objects and activities found there","wall color only","a person's name","number of windows"],
-["Best reasoning?","Use clues, compare them with the sentence, then explain.","Guess quickly.","Copy a friend.","Choose the longest answer."]
-],
-
-/* LEVEL 10 HOTS */
-
-[
-["HOTS: The kitchen floor is wet, plates are clean, and Emak holds a dishcloth. What is the BEST inference?","Emak has probably washed the dishes.","Emak is making the bed.","Emak is gardening.","Emak is sleeping."],
-["HOTS: Bapak is in the backyard with plants, but the sentence says 'He is mopping the floor.' What should a careful detective do?","Use visual evidence to question and revise the sentence.","Ignore the picture.","Assume every sentence is correct.","Move Bapak without evidence."],
-["HOTS: Four family members have four chores. Which plan is most efficient?","Each person takes one suitable chore.","Everyone does the same chore.","Nobody helps.","Only one person works."],
-["HOTS: Which evidence BEST proves a room is a kitchen?","A stove, cooking activity, and dishes.","A bed and pillow.","A bathtub and towel.","Plants and soil."],
-["HOTS: 'My sister is in the garden because she is making the bed.' Is this reasoning strong?","No. The activity and location do not normally match; more evidence is needed.","Yes, always.","Garden means bedroom.","Sisters cannot make beds."],
-["HOTS: Putri first makes the bed in the bedroom, then helps wash dishes in the kitchen. What changed?","Her location and activity changed.","Only her name changed.","Nothing changed.","The house disappeared."],
-["HOTS: You see plants and a broom. What is the safest conclusion?","The person may be cleaning outdoors; more evidence is needed to say they are gardening.","They are definitely cooking.","They are sleeping.","They are definitely in the bathroom."],
-["HOTS: Why is 'because' useful?","It helps explain a reason.","It names a room.","It means bedroom.","It replaces every verb."],
-["HOTS: A student gets an answer wrong. What is the best critical-thinking response?","Find the clue that caused the mistake, revise the answer, and explain why.","Guess again.","Copy a friend.","Stop thinking."],
-["HOTS FINAL: Pipit is in the kitchen. She holds a plate. The sink has clean dishes. Her mother says, 'Good girl!' What is the BEST conclusion?","Pipit likely washed the dishes, supported by the clues.","Pipit is gardening.","Pipit is making the bed.","Pipit is taking a bath."]
-]
-
-];
-
-
-/* ==========================================
-   GAME VARIABLES
-========================================== */
-
-let level=0;
-let question=0;
-let score=0;
-let treasures=0;
-
-let currentStudent="";
-let currentSchool="";
-let startTime="";
-
-
-/* ==========================================
-   START GAME
-========================================== */
-
-function startGame(){
-
-    currentStudent=
-        document.getElementById("studentName").value.trim();
-
-    currentSchool=
-        document.getElementById("schoolName").value.trim();
-
-    if(!currentStudent || !currentSchool){
-
-        alert(
-            "Silakan isi nama siswa dan nama sekolah terlebih dahulu."
-        );
-
-        return;
-    }
-
-    level=0;
-    question=0;
-    score=0;
-    treasures=0;
-
-    startTime=
-        new Date().toLocaleString("id-ID");
-
-    document
-        .getElementById("startPage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("gamePage")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("dashboardPage")
-        .classList.add("hidden");
-
-    updateStatus();
-
-    showDrilling();
-}
-
-
-/* ==========================================
-   STATUS
-========================================== */
-
-function updateStatus(){
-
-    document.getElementById("playerName").textContent=
-        currentStudent;
-
-    document.getElementById("score").textContent=
-        score;
-
-    document.getElementById("treasureCount").textContent=
-        treasures;
-
-    document.getElementById("levelNumber").textContent=
-        level+1;
-
-    document.getElementById("progressBar").style.width=
-        (level/10*100)+"%";
-}
-
-
-/* ==========================================
-   SPEECH
-========================================== */
-
-function speak(text){
-
-    if(!("speechSynthesis" in window)){
-
-        alert(
-            "Browser ini belum mendukung fitur pengucapan."
-        );
-
-        return;
-    }
-
-    speechSynthesis.cancel();
-
-    let speech=
-        new SpeechSynthesisUtterance(text);
-
-    speech.lang="en-US";
-    speech.rate=.72;
-
-    speechSynthesis.speak(speech);
-}
-
-
-/* ==========================================
-   DRILLING
-========================================== */
-
-function showDrilling(){
-
-    document
-        .getElementById("drillPage")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("mapPage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("questionPage")
-        .classList.add("hidden");
-
-    let html=`
-
-    <h2>
-    🎙️ Level ${level+1} — Vocabulary Drilling
-    </h2>
-
-    <p>
-    Dengarkan dan ulangi sebelum mencari harta karun.
-    </p>
-
-    `;
-
-    vocabularyData[level].forEach(word=>{
-
-        html+=`
-
-        <div class="vocab">
-
-        <span class="word">
-        ${word[0]}
-        </span>
-
-        —
-
-        <span class="pron">
-        /${word[1]}/
-        </span>
-
-        —
-
-        <span class="meaning">
-        ${word[2]}
-        </span>
-
-        <button
-        onclick='speak(${JSON.stringify(word[0])})'>
-        🔊
-        </button>
-
-        </div>
-
-        `;
-
-    });
-
-    html+=`
-
-    <br>
-
-    <button
-    onclick="drillAll()">
-    🔊 DRILLING SEMUA
-    </button>
-
-    <button
-    class="gold"
-    onclick="enterMap()">
-    🗺️ AKU SIAP!
-    </button>
-
-    `;
-
-    document.getElementById("drillPage").innerHTML=
-        html;
-}
-
-
-function drillAll(){
-
-    vocabularyData[level]
-        .forEach((word,index)=>{
-
-            setTimeout(()=>{
-
-                speak(word[0]);
-
-            },index*1400);
-
-        });
-
-}
-
-
-/* ==========================================
-   MAP
-========================================== */
-
-function enterMap(){
-
-    document
-        .getElementById("drillPage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("mapPage")
-        .classList.remove("hidden");
-
-}
-
-
-/* ==========================================
-   TREASURE
-========================================== */
-
-function findTreasure(position){
-
-    if(position !== level%5){
-
-        alert(
-            "💡 Petunjuk: Harta karun yang benar sedang menunggumu. Coba lokasi lain!"
-        );
-
-        return;
-    }
-
-    document
-        .getElementById("mapPage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("questionPage")
-        .classList.remove("hidden");
-
-    showQuestion();
-
-}
-
-
-/* ==========================================
-   QUESTIONS
-========================================== */
-
-function showQuestion(){
-
-    let data=
-        questions[level][question];
-
-    let correct=
-        data[1];
-
-    let answers=
-        data.slice(1);
-
-    answers=
-        answers.sort(
-            ()=>Math.random()-.5
-        );
-
-    let html=`
-
-    <h2>
-    💎 Harta Karun Ditemukan!
-    </h2>
-
-    <p>
-    <b>
-    Level ${level+1} — Pertanyaan ${question+1}/10
-    </b>
-    </p>
-
-    <div class="card">
-
-    <h3>
-    ${data[0]}
-    </h3>
-
-    `;
-
-    answers.forEach((answer,index)=>{
-
-        html+=`
-
-        <button
-        class="question-option"
-        onclick='answerQuestion(
-        this,
-        ${JSON.stringify(answer)},
-        ${JSON.stringify(correct)}
-        )'>
-
-        ${String.fromCharCode(65+index)}.
-        ${answer}
-
-        </button>
-
-        `;
-
-    });
-
-    html+=`
-
-    </div>
-
-    <p class="small">
-
-    🎯 Gunakan petunjuk dari kosakata.
-    Level 10 menggunakan HOTS dan critical thinking.
-
-    </p>
-
-    `;
-
-    document.getElementById("questionPage").innerHTML=
-        html;
-
-}
-
-
-/* ==========================================
-   ANSWER
-========================================== */
-
-function answerQuestion(
-    button,
-    selected,
-    correct
-){
-
-    document
-        .querySelectorAll(".question-option")
-        .forEach(
-            b=>b.disabled=true
-        );
-
-    if(selected===correct){
-
-        button.classList.add("correct");
-
-        score+=10;
-        treasures++;
-
-        document
-            .getElementById("questionPage")
-            .insertAdjacentHTML(
-                "beforeend",
-                `
-                <div class="feedback good">
-                🎉 BENAR! +10 poin.
-                Harta berhasil ditemukan!
-                </div>
-                `
-            );
-
-    }else{
-
-        button.classList.add("wrong");
-
-        document
-            .getElementById("questionPage")
-            .insertAdjacentHTML(
-                "beforeend",
-                `
-                <div class="feedback bad">
-                💡 Belum tepat.
-                Jawaban yang benar:
-                <b>${correct}</b>
-                </div>
-                `
-            );
-
-    }
-
-    question++;
-
-    updateStatus();
-
-    setTimeout(()=>{
-
-        if(question>=10){
-
-            question=0;
-            level++;
-
-            if(level>=10){
-
-                finishGame();
-
-            }else{
-
-                updateStatus();
-                showDrilling();
-
-            }
-
-        }else{
-
-            enterMap();
-            showQuestion();
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Harta Karun: My Family Time (Chapter 3)</title>
+    <!-- Three.js for 3D graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <!-- XLSX for Downloading Teacher Recap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            font-family: 'Quicksand', sans-serif;
         }
 
-    },900);
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1a1a2e;
+            color: #fff;
+        }
 
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 3D Canvas */
+        #canvas-3d {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* UI Overlay Screens */
+        .overlay-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 30, 0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fredoka One', cursive;
+            color: #ffdd59;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 15px;
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+
+        .btn {
+            background: #ff5e57;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 94, 87, 0.4);
+            transition: all 0.2s ease;
+            margin: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: #ff3f34;
+        }
+
+        .btn-green {
+            background: #05c46b;
+            box-shadow: 0 5px 15px rgba(5, 196, 107, 0.4);
+        }
+        .btn-green:hover { background: #04aa56; }
+
+        .btn-blue {
+            background: #0fbcf9;
+            box-shadow: 0 5px 15px rgba(15, 188, 249, 0.4);
+        }
+        .btn-blue:hover { background: #0be881; }
+
+        .form-group {
+            margin: 15px 0;
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #0fbcf9;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #0fbcf9;
+            background: #222f3e;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* TOP HUD */
+        #hud {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .hud-card {
+            background: rgba(30, 39, 46, 0.85);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 2px solid #ffdd59;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        /* INTERACTION POPUP / CARDS */
+        .modal-card {
+            background: #2c3e50;
+            border: 4px solid #f1c40f;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        /* DRILLING CARD */
+        .drill-item {
+            background: #34495e;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vocab-word {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+
+        .vocab-phonetic {
+            font-size: 1.1rem;
+            color: #bdc3c7;
+            font-style: italic;
+        }
+
+        .vocab-meaning {
+            font-size: 1.2rem;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .tpr-box {
+            background: #e67e22;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 5px;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        /* STORY COMIC BOX */
+        .comic-box {
+            background: #ecf0f1;
+            color: #2c3e50;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+            border-left: 8px solid #3498db;
+        }
+
+        .speaker-name {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+
+        /* QUESTION CARD */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option-btn {
+            background: #34495e;
+            color: white;
+            border: 2px solid #7f8c8d;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #2980b9;
+            border-color: #3498db;
+        }
+
+        .explanation-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .exp-correct { background: rgba(46, 204, 113, 0.2); border: 2px solid #2ecc71; color: #2ecc71; }
+        .exp-wrong { background: rgba(231, 76, 60, 0.2); border: 2px solid #e74c3c; color: #e74c3c; }
+
+        /* CONTROLS OVERLAY */
+        #controls-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        /* DASHBOARD TABLE */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #34495e;
+            color: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .dashboard-table th, .dashboard-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #485460;
+        }
+
+        .dashboard-table th {
+            background: #1e272e;
+            color: #ffdd59;
+        }
+
+        /* SOLO / HOTS BADGE */
+        .badge-hots {
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-solo {
+            background: #9b59b6;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- 3D Canvas -->
+    <canvas id="canvas-3d"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+        <div class="hud-card">
+            <i class="fa-solid fa-user-graduate" style="color: #0fbcf9;"></i>
+            <span id="hud-name">Siswa</span>
+        </div>
+        <div class="hud-card">
+            <i class="fa-solid fa-map-location-dot" style="color: #05c46b;"></i>
+            <span>Level: <span id="hud-level">1</span>/10</span>
+        </div>
+        <div class="hud-card">
+            <i class="fa-solid fa-gem" style="color: #ffdd59;"></i>
+            <span>Skor: <span id="hud-score">0</span></span>
+        </div>
+        <button class="btn btn-blue" style="pointer-events: auto; padding: 8px 15px; font-size: 0.9rem;" onclick="openTeacherDashboard()">
+            <i class="fa-solid fa-chalkboard-user"></i> Dashboard Guru
+        </button>
+    </div>
+
+    <!-- CONTROLS HINT -->
+    <div id="controls-hint" class="hidden">
+        Gunakan tombol <b style="color:#ffdd59;">[PANAH / WASD]</b> atau <b style="color:#ffdd59;">[SENTUH / KLIK]</b> untuk berjalan mendekati Peti Harta Karun!
+    </div>
+
+    <!-- SCREEN 1: LOGIN REGISTRATION -->
+    <div id="screen-login" class="overlay-screen">
+        <h1><i class="fa-solid fa-treasure-chest" style="color:#ffdd59;"></i> PETUALANGAN HARTA KARUN</h1>
+        <h3>English for Nusantara Kids - SD Class 3 (Chapter 3)</h3>
+        <p style="max-width: 500px; color: #d2dae2;">Jelajahi rumah, pelajari kosakata kegiatan keluarga, ikuti latihan gerakan (TPR), dan temukan harta karun pengetahuan!</p>
+
+        <div class="form-group">
+            <label><i class="fa-solid fa-user"></i> Nama Lengkap Siswa:</label>
+            <input type="text" id="input-student-name" placeholder="Masukkan nama..." value="Budi Santoso">
+        </div>
+
+        <div class="form-group">
+            <label><i class="fa-solid fa-school"></i> Nama Sekolah:</label>
+            <input type="text" id="input-school-name" placeholder="Masukkan nama sekolah..." value="SD Nusantara 01">
+        </div>
+
+        <button class="btn btn-green" onclick="startGame()">
+            <i class="fa-solid fa-play"></i> Mulai Petualangan!
+        </button>
+    </div>
+
+    <!-- SCREEN 2: DRILLING VOCABULARY & SPEECH -->
+    <div id="screen-drill" class="overlay-screen hidden">
+        <div class="modal-card">
+            <h2><i class="fa-solid fa-volume-high"></i> KOSAKATA & GERAKAN (TPR)</h2>
+            <p>Dengarkan, ucapkan, dan peragakan gerakannya sebelum mencari Harta Karun!</p>
+            
+            <div id="drill-content" class="drill-item">
+                <!-- Dynamic Content -->
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="btn btn-blue" onclick="playCurrentAudio()">
+                    <i class="fa-solid fa-volume-high"></i> Dengarkan Pengucapan
+                </button>
+                <button class="btn btn-green" id="btn-next-drill" onclick="nextDrillItem()">
+                    Lanjut Kosakata <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: STORY / COMIC VIDEO ANIMATION SIMULATION -->
+    <div id="screen-story" class="overlay-screen hidden">
+        <div class="modal-card">
+            <h2><i class="fa-solid fa-book-open"></i> CERITA: MY FAMILY TIME</h2>
+            <p>Simak cerita keluarga Pipit & Mita sesuai Buku Teks Kementerian Pendidikan!</p>
+
+            <div id="story-content" class="comic-box">
+                <!-- Dynamic Story dialogue -->
+            </div>
+
+            <button class="btn btn-blue" onclick="playStoryAudio()">
+                <i class="fa-solid fa-volume-high"></i> Baca Suara Cerita
+            </button>
+            <button class="btn btn-green" onclick="finishStoryGoToQuestion()">
+                Buka Peti Harta Karun! <i class="fa-solid fa-key"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: QUESTION MODAL (HOTs, SOLO, CRITICAL THINKING) -->
+    <div id="screen-question" class="overlay-screen hidden">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="question-level-tag" class="badge-solo">SOLO: Unistructural</span>
+                <span id="question-number-tag" style="color:#ffdd59; font-weight:bold;">Soal 1 dari 10</span>
+            </div>
+
+            <h3 id="question-text" style="margin-top: 15px; text-align: left; color:#ffffff;">Text Pertanyaan</h3>
+            
+            <div id="options-container" class="options-grid">
+                <!-- Options rendered here -->
+            </div>
+
+            <div id="explanation-container" class="explanation-box hidden">
+                <!-- Explanation rendered here -->
+            </div>
+
+            <button id="btn-next-question" class="btn btn-green hidden" style="margin-top: 15px; width: 100%;" onclick="nextQuestion()">
+                Lanjut ke Tantangan Berikutnya <i class="fa-solid fa-forward"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: LEVEL COMPLETE -->
+    <div id="screen-level-complete" class="overlay-screen hidden">
+        <div class="modal-card" style="text-align: center;">
+            <h2><i class="fa-solid fa-trophy" style="color:#f1c40f; font-size: 3rem;"></i></h2>
+            <h1 id="level-complete-title">LEVEL 1 SELESAI!</h1>
+            <p id="level-complete-desc">Kamu berhasil membuka Harta Karun di level ini!</p>
+            <h3>Skor Perolehan: <span id="level-score-val" style="color:#2ecc71;">100</span></h3>
+            
+            <button class="btn btn-green" onclick="startNextLevel()">
+                Lanjut ke Level Berikutnya <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- SCREEN 6: TEACHER DASHBOARD -->
+    <div id="screen-dashboard" class="overlay-screen hidden">
+        <div class="modal-card" style="max-width: 800px;">
+            <h2><i class="fa-solid fa-chalkboard-user"></i> DASHBOARD REKAP GURU</h2>
+            <p>Rekapitulasi Nilai & Evaluasi Pembelajaran Siswa (Chapter 3 - My Family Time)</p>
+
+            <div style="overflow-x: auto;">
+                <table class="dashboard-table" id="recap-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Siswa</th>
+                            <th>Sekolah</th>
+                            <th>Level Selesai</th>
+                            <th>Skor Total</th>
+                            <th>Capaian SOLO Taxonomy</th>
+                            <th>Status HOTS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboard-tbody">
+                        <!-- Student data rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; gap: 10px;">
+                <button class="btn btn-green" onclick="downloadExcelRecap()">
+                    <i class="fa-solid fa-file-excel"></i> Download Excel (.xlsx)
+                </button>
+                <button class="btn" style="background: #e74c3c;" onclick="clearTeacherData()">
+                    <i class="fa-solid fa-trash"></i> Hapus Data Rekap
+                </button>
+                <button class="btn btn-blue" onclick="closeTeacherDashboard()">
+                    <i class="fa-solid fa-xmark"></i> Tutup Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ==========================================================================
+   GAME DATA & DATABASE (CHAPTER 3 ENGLISH FOR NUSANTARA KIDS CLASS 3 SD)
+   ========================================================================== */
+
+// 1. Vocabulary & TPR Drilling Database per Level
+const drillDatabase = {
+    1: [
+        { word: "sweeping the floor", phonetic: "/ˈswiːpɪŋ ðə flɔːr/", meaning: "Menyapu lantai", tpr: "Peragakan gerakan memegang sapu dan menyapu ke kiri dan kanan!" },
+        { word: "mopping the floor", phonetic: "/ˈmɒpɪŋ ðə flɔːr/", meaning: "Mengepel lantai", tpr: "Peragakan gerakan mendorong alat pel maju dan mundur!" }
+    ],
+    2: [
+        { word: "washing the dishes", phonetic: "/ˈwɒʃɪŋ ðə dɪʃɪz/", meaning: "Mencuci piring", tpr: "Peragakan gerakan menggosok piring dengan spons!" },
+        { word: "making the bed", phonetic: "/ˈmeɪkɪŋ ðə bed/", meaning: "Merapikan tempat tidur", tpr: "Peragakan gerakan menarik dan mengibaskan selimut!" }
+    ],
+    3: [
+        { word: "gardening", phonetic: "/ˈɡɑːdnɪŋ/", meaning: "Berkebun", tpr: "Peragakan gerakan menyiram tanaman dengan gembor air!" },
+        { word: "cooking", phonetic: "/ˈkʊkɪŋ/", meaning: "Memasak", tpr: "Peragakan gerakan mengaduk masakan di dalam wajan!" }
+    ],
+    4: [
+        { word: "living room", phonetic: "/ˈlɪvɪŋ ruːm/", meaning: "Ruang tamu / ruang keluarga", tpr: "Duduk santai sambil memperagakan membaca buku di ruang tamu!" },
+        { word: "bedroom", phonetic: "/ˈbedruːm/", meaning: "Kamar tidur", tpr: "Tangkupkan kedua tangan di pipi sambil memejamkan mata (tidur)!" }
+    ],
+    5: [
+        { word: "kitchen", phonetic: "/ˈkɪtʃɪn/", meaning: "Dapur", tpr: "Peragakan memotong sayuran dengan pisau mainan!" },
+        { word: "bathroom", phonetic: "/ˈbɑːθruːm/", meaning: "Kamar mandi", tpr: "Peragakan gerakan menggosok gigi secara mutlak!" }
+    ],
+    6: [
+        { word: "garden", phonetic: "/ˈɡɑːdn/", meaning: "Taman bunga", tpr: "Hirup napas dalam-dalam seolah mencium wangi bunga!" },
+        { word: "backyard", phonetic: "/ˌbækˈjɑːd/", meaning: "Halaman belakang", tpr: "Peragakan gerakan berlari kecil di tempat!" }
+    ],
+    7: [
+        { word: "washing clothes", phonetic: "/ˈwɒʃɪŋ kləʊðz/", meaning: "Mencuci pakaian", tpr: "Peragakan gerakan memeras pakaian basah!" },
+        { word: "drinking coffee", phonetic: "/ˈdrɪŋkɪŋ ˈkɒfi/", meaning: "Minum kopi", tpr: "Peragakan memegang cangkir dan meminumnya perlahan!" }
+    ],
+    8: [
+        { word: "terrace", phonetic: "/ˈterəs/", meaning: "Teras rumah", tpr: "Melambaikan tangan menyapa tetangga dari teras!" },
+        { word: "diligent", phonetic: "/ˈdɪlɪdʒənt/", meaning: "Rajin", tpr: "Acungkan dua jempol dengan penuh semangat!" }
+    ],
+    9: [
+        { word: "chores", phonetic: "/tʃɔːz/", meaning: "Pekerjaan rumah tangga", tpr: "Usap keringat di dahi menunjukkan kerja keras!" },
+        { word: "cleaning day", phonetic: "/ˈkliːnɪŋ deɪ/", meaning: "Hari kerja bakti membersihkan rumah", tpr: "Tepuk tangan gembira bersama tim!" }
+    ],
+    10: [
+        { word: "family time", phonetic: "/ˈfæməli taɪm/", meaning: "Waktu berkumpul keluarga", tpr: "Peluk diri sendiri tanda kasih sayang pada keluarga!" },
+        { word: "helping parents", phonetic: "/ˈhelpɪŋ ˈpeərənts/", meaning: "Membantu orang tua", tpr: "Bungkukkan badan bersalaman dengan santun!" }
+    ]
+};
+
+// 2. Stories per Level (Twinkl-style narrative)
+const storyDatabase = {
+    1: { speaker: "Pipit & Mita", text: "Mita berkunjung ke rumah Pipit. Pipit sedang menyapu lantai di ruang tamu. Pipit berkata: 'I am sweeping the floor.'" },
+    2: { speaker: "Emak & Pipit", text: "Emak berada di dapur sedang mencuci piring. Pipit menunjukkan: 'My mother is washing the dishes.'" },
+    3: { speaker: "Bapak & Pipit", text: "Bapak berada di halaman belakang (backyard) menyiram bunga. Pipit berkata: 'My father is gardening.'" },
+    4: { speaker: "Putra & Putri", text: "Putra dan Putri ada di kamar tidur. Mereka merapikan kasur bersama. 'They are making the bed.'" },
+    5: { speaker: "Emak Pulang", text: "Emak pulang membawa belanjaan dan bertanya: 'Where are you, Pipit?' Pipit menjawab: 'I am in the kitchen.'" },
+    6: { speaker: "Bapak di Halaman", text: "Emak mengira Bapak minum kopi di teras, tapi Bapak berkata: 'No, I am gardening in the backyard!'" },
+    7: { speaker: "Chore Station Game", text: "Keluarga Pipit melakukan kerja bakti. Semua bekerja sama menjaga kebersihan rumah." },
+    8: { speaker: "Mita Praising", text: "Mita melihat kebersihan rumah Pipit dan berkata: 'Wow, your family is so diligent!'" },
+    9: { speaker: "Ruangan Rumah", text: "Setiap anggota keluarga berada di ruangan berbeda melakukan aktivitas favorit mereka." },
+    10: { speaker: "Refleksi HOTS", text: "Mengapa penting membantu orang tua melakukan pekerjaan rumah tangga bersama-sama?" }
+};
+
+// 3. Question Database: 10 Levels x 10 Questions = 100 Questions total!
+// Embedded with SOLO Taxonomy, HOTS, Critical Thinking, Phonetics & Indonesian Meanings
+const questionDatabase = {};
+
+// Helper to generate 10 questions per level systematically according to Chapter 3 text
+function generateQuestions() {
+    for (let lvl = 1; lvl <= 10; lvl++) {
+        questionDatabase[lvl] = [];
+        for (let q = 1; q <= 10; q++) {
+            let soloLevel = (lvl <= 3) ? "Unistructural" : (lvl <= 6) ? "Multistructural" : (lvl <= 8) ? "Relational" : "Extended Abstract (HOTS)";
+            let isHots = (lvl === 10 || q >= 8);
+            
+            // Select Question templates based on Chapter 3
+            if (lvl === 1) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Apa arti dari kata 'sweeping the floor' (/ˈswiːpɪŋ ðə flɔːr/)?`,
+                    options: ["Menyapu lantai", "Mengepel lantai", "Mencuci piring", "Merapikan kasur"],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Benar! 'Sweeping the floor' berarti menyapu lantai menggunakan sapu.",
+                    expWrong: "Salah. Ingat kata 'sweep' artinya menyapu, dan 'floor' artinya lantai."
+                });
+            } else if (lvl === 2) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Mita melihat Emak di dapur. Emak is... the dishes.`,
+                    options: ["washing", "sweeping", "mopping", "making"],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Tepat! Pasangan kata untuk 'dishes' (piring) adalah 'washing' (mencuci).",
+                    expWrong: "Kurang tepat. Kegiatan untuk piring adalah 'washing the dishes' (mencuci piring)."
+                });
+            } else if (lvl === 3) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Bapak is in the backyard. What is he doing?`,
+                    options: ["He is gardening", "He is sleeping", "He is cooking", "He is mopping"],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Benar! Bapak berada di halaman belakang sedang berkebun (gardening).",
+                    expWrong: "Salah. Di halaman belakang (backyard), kegiatan Bapak adalah 'gardening' (berkebun)."
+                });
+            } else if (lvl === 4) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Dimanakah ruangan untuk tidur dalam bahasa Inggris?`,
+                    options: ["Bedroom", "Bathroom", "Kitchen", "Living room"],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Hebat! 'Bedroom' berasal dari kata 'bed' (tempat tidur) dan 'room' (ruangan).",
+                    expWrong: "Salah. Tempat tidur adalah 'bed', jadi kamarnya adalah 'bedroom'."
+                });
+            } else if (lvl === 5) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Pipit is washing the dishes. Where is she?`,
+                    options: ["She is in the kitchen", "She is in the bedroom", "She is in the garden", "She is on the terrace"],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Benar! Mencuci piring (washing dishes) dilakukan di dapur (kitchen).",
+                    expWrong: "Kurang tepat. Dapur dalam bahasa Inggris adalah 'kitchen'."
+                });
+            } else if (lvl === 6) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Emak: 'Where is your father?' - Pipit: '... is in the backyard.'`,
+                    options: ["He", "She", "They", "I"],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Benar! Kata ganti untuk 'father' (laki-laki) adalah 'He'.",
+                    expWrong: "Salah. 'Father' adalah laki-laki tunggal, jadi menggunakan 'He', bukan 'She'."
+                });
+            } else if (lvl === 7) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Putra and Putri are making the bed. Pronoun kata ganti yang tepat adalah:`,
+                    options: ["They", "He", "She", "We"],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Tepat! Karena Putra dan Putri lebih dari satu orang (jamak), gunakan 'They'.",
+                    expWrong: "Kurang tepat. Untuk menunjukkan mereka (lebih dari 1 orang) gunakan 'They'."
+                });
+            } else if (lvl === 8) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] (Critical Thinking) Mengapa Mita menyebut keluarga Pipit 'So diligent' (Sangat rajin)?`,
+                    options: [
+                        "Karena semua anggota keluarga bekerja sama membersihkan rumah",
+                        "Karena Pipit memberikan Mita makanan enak",
+                        "Karena rumah Pipit sangat besar dan mewah",
+                        "Karena Bapak sedang tidur santai"
+                    ],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Sangat Bagus! Sikap saling membantu melakukan kerja bakti di rumah menunjukkan sikap rajin (diligent).",
+                    expWrong: "Salah. Membagi tugas rumah tangga bersama menunjukkan kerja keras dan kerajinan."
+                });
+            } else if (lvl === 9) {
+                questionDatabase[lvl].push({
+                    text: `[Q${q}] Manakah pasangan ruangan dan kegiatan yang BENAR di bawah ini?`,
+                    options: [
+                        "Kitchen - Cooking",
+                        "Bedroom - Gardening",
+                        "Bathroom - Making the bed",
+                        "Garden - Washing the dishes"
+                    ],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: isHots,
+                    expCorrect: "Benar! 'Cooking' (memasak) memang dilakukan di 'Kitchen' (dapur).",
+                    expWrong: "Salah. Perhatikan logika ruangan dan kegiatan yang sesuai!"
+                });
+            } else if (lvl === 10) {
+                // HOTS Level 10 Questions
+                questionDatabase[lvl].push({
+                    text: `[HOTS Q${q}] Jika kamu melihat lantai rumahmu kotor dan ibu sedang memasak di dapur, tindakan apa yang sesuai dengan nilai karakter Chapter 3?`,
+                    options: [
+                        "Mengambil sapu dan berkata: 'I am sweeping the floor, Mom!'",
+                        "Membiarkan lantai kotor dan bermain game",
+                        "Menyuruh adik mengepel lantai sendiri",
+                        "Pergi keluar rumah tanpa pamit"
+                    ],
+                    correct: 0,
+                    solo: soloLevel,
+                    hots: true,
+                    expCorrect: "Luar Biasa (HOTS)! Kamu mampu menerapkan nilai kebaikan membantu orang tua secara mandiri!",
+                    expWrong: "Kurang tepat. Sebagai anak yang rajin, kita harus inisiatif membantu pekerjaan rumah."
+                });
+            }
+        }
+    }
 }
 
+generateQuestions();
 
-/* ==========================================
-   FINISH
-========================================== */
+/* ==========================================================================
+   GAME STATE & VARIABLES
+   ========================================================================== */
+let gameState = {
+    studentName: "",
+    schoolName: "",
+    currentLevel: 1,
+    currentQuestionIndex: 0,
+    currentDrillIndex: 0,
+    score: 0,
+    levelScores: {},
+    teacherRecords: []
+};
 
-function finishGame(){
+// Speech Synthesis setup
+const synth = window.speechSynthesis;
 
-    document
-        .getElementById("questionPage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("mapPage")
-        .classList.add("hidden");
-
-    let solo="";
-
-    if(score>=900){
-
-        solo=
-        "Extended Abstract — mampu menghubungkan bukti, membuat inferensi, dan memberikan alasan.";
-
-    }else if(score>=700){
-
-        solo=
-        "Relational — mampu menghubungkan beberapa informasi.";
-
-    }else if(score>=500){
-
-        solo=
-        "Multistructural — mampu menggunakan beberapa informasi.";
-
-    }else{
-
-        solo=
-        "Unistructural — mulai memahami satu informasi utama.";
-
-    }
-
-    document
-        .getElementById("finishPage")
-        .classList.remove("hidden");
-
-    document.getElementById("finishPage").innerHTML=`
-
-    <div class="hero">
-    👑💎🏆
-    </div>
-
-    <h2>
-    HARTA KARUN UTAMA DITEMUKAN!
-    </h2>
-
-    <h3>
-    ${currentStudent}
-    </h3>
-
-    <h1>
-    ⭐ ${score}/1000
-    </h1>
-
-    <p>
-    💎 Harta ditemukan:
-    ${treasures}/100
-    </p>
-
-    <div class="card">
-
-    <h3>
-    🧠 SOLO Taxonomy
-    </h3>
-
-    <p>
-    ${solo}
-    </p>
-
-    </div>
-
-    <div class="card">
-
-    <h3>
-    🔎 Critical Thinking
-    </h3>
-
-    <p>
-    Level 10 mengukur kemampuan:
-    </p>
-
-    <ul>
-
-    <li>mencari evidence/bukti</li>
-
-    <li>membandingkan informasi</li>
-
-    <li>membuat inference</li>
-
-    <li>menentukan kesimpulan</li>
-
-    <li>menjelaskan reasoning</li>
-
-    <li>memecahkan masalah</li>
-
-    </ul>
-
-    </div>
-
-    <button
-    class="green"
-    onclick="saveResult()">
-
-    💾 SIMPAN HASIL
-
-    </button>
-
-    <button
-    onclick="openDashboard()">
-
-    👩‍🏫 DASHBOARD GURU
-
-    </button>
-
-    `;
-
+function speakText(text, lang = 'en-US') {
+    if (!synth) return;
+    synth.cancel(); // Stop previous speech
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.85; // Slightly slower for kids
+    synth.speak(utterance);
 }
 
+/* ==========================================================================
+   3D ENGINE (THREE.JS TREASURE HUNT ENVIRONMENT)
+   ========================================================================== */
+let scene, camera, renderer;
+let player, treasureChest;
+let keysPressed = {};
 
-/* ==========================================
-   SAVE DATA
-========================================== */
+function init3D() {
+    const canvas = document.getElementById('canvas-3d');
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87ceeb); // Sky blue
+    scene.fog = new THREE.Fog(0x87ceeb, 10, 50);
 
-function saveResult(){
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 5, 10);
 
-    let records=
-        JSON.parse(
-            localStorage.getItem(
-                "TreasureQuestChapter3"
-            ) || "[]"
-        );
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
 
-    let solo="";
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
 
-    if(score>=900){
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(10, 20, 10);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
 
-        solo="Extended Abstract";
+    // Floor (Grass Ground)
+    const floorGeo = new THREE.PlaneGeometry(60, 60);
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x7bed9f });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
 
-    }else if(score>=700){
+    // House Walls (Background Deco)
+    const houseGeo = new THREE.BoxGeometry(12, 6, 8);
+    const houseMat = new THREE.MeshStandardMaterial({ color: 0xffa801 });
+    const house = new THREE.Mesh(houseGeo, houseMat);
+    house.position.set(0, 3, -10);
+    house.castShadow = true;
+    scene.add(house);
 
-        solo="Relational";
+    // House Roof
+    const roofGeo = new THREE.ConeGeometry(9, 4, 4);
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0xff4d4d });
+    const roof = new THREE.Mesh(roofGeo, roofMat);
+    roof.position.set(0, 7, -10);
+    roof.rotation.y = Math.PI / 4;
+    scene.add(roof);
 
-    }else if(score>=500){
+    // Cartoon Player Character (Pipit)
+    const playerGroup = new THREE.Group();
+    
+    // Body
+    const bodyGeo = new THREE.CylinderGeometry(0.5, 0.7, 1.5, 16);
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x3498db });
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 1;
+    playerGroup.add(body);
 
-        solo="Multistructural";
+    // Head
+    const headGeo = new THREE.SphereGeometry(0.6, 16, 16);
+    const headMat = new THREE.MeshStandardMaterial({ color: 0xffdbac });
+    const head = new THREE.Mesh(headGeo, headMat);
+    head.position.y = 2;
+    playerGroup.add(head);
 
-    }else{
+    playerGroup.position.set(0, 0, 4);
+    player = playerGroup;
+    scene.add(player);
 
-        solo="Unistructural";
+    // Treasure Chest
+    const chestGroup = new THREE.Group();
+    const chestBox = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 0.8, 0.8),
+        new THREE.MeshStandardMaterial({ color: 0xf1c40f, roughness: 0.3 })
+    );
+    chestBox.position.y = 0.4;
+    chestGroup.add(chestBox);
 
-    }
+    const chestLid = new THREE.Mesh(
+        new THREE.BoxGeometry(1.25, 0.3, 0.85),
+        new THREE.MeshStandardMaterial({ color: 0xe67e22 })
+    );
+    chestLid.position.y = 0.85;
+    chestGroup.add(chestLid);
 
-    records.push({
+    chestGroup.position.set(0, 0, -2);
+    treasureChest = chestGroup;
+    scene.add(treasureChest);
 
-        time:startTime,
+    // Event listeners
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('keydown', (e) => keysPressed[e.key.toLowerCase()] = true);
+    window.addEventListener('keyup', (e) => keysPressed[e.key.toLowerCase()] = false);
 
-        name:currentStudent,
-
-        school:currentSchool,
-
-        score:score,
-
-        percent:score/10,
-
-        solo:solo,
-
-        critical:
-        "HOTS — evidence, comparison, inference, reasoning"
-
+    // Touch / Click to Move
+    window.addEventListener('pointerdown', (e) => {
+        if (!document.getElementById('hud').classList.contains('hidden')) {
+            // Move player forward on tap
+            player.position.z -= 0.8;
+            checkChestCollision();
+        }
     });
 
-    localStorage.setItem(
-        "TreasureQuestChapter3",
-        JSON.stringify(records)
-    );
-
-    alert(
-        "✅ Data siswa berhasil disimpan ke Dashboard Guru."
-    );
-
-    openDashboard();
-
+    animate();
 }
 
-
-/* ==========================================
-   DASHBOARD
-========================================== */
-
-function openDashboard(){
-
-    document
-        .getElementById("startPage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("gamePage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("dashboardPage")
-        .classList.remove("hidden");
-
-    renderDashboard();
-
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function animate() {
+    requestAnimationFrame(animate);
 
-function renderDashboard(){
+    // Controls logic
+    if (player && !document.getElementById('hud').classList.contains('hidden')) {
+        let speed = 0.15;
+        if (keysPressed['arrowup'] || keysPressed['w']) player.position.z -= speed;
+        if (keysPressed['arrowdown'] || keysPressed['s']) player.position.z += speed;
+        if (keysPressed['arrowleft'] || keysPressed['a']) player.position.x -= speed;
+        if (keysPressed['arrowright'] || keysPressed['d']) player.position.x += speed;
 
-    let records=
-        JSON.parse(
-            localStorage.getItem(
-                "TreasureQuestChapter3"
-            ) || "[]"
-        );
+        // Camera follow
+        camera.position.x = player.position.x;
+        camera.position.z = player.position.z + 7;
+        camera.lookAt(player.position);
 
-    document.getElementById(
-        "totalStudents"
-    ).textContent=
-        records.length;
+        // Treasure Rotation Animation
+        if (treasureChest) {
+            treasureChest.rotation.y += 0.01;
+        }
 
-    let average=0;
-
-    if(records.length){
-
-        average=
-            records.reduce(
-                (total,item)=>
-                    total+item.percent,
-                0
-            )/records.length;
-
+        checkChestCollision();
     }
 
-    document.getElementById(
-        "averageScore"
-    ).textContent=
-        Math.round(average)+"%";
-
-
-    let rows="";
-
-    records.forEach(item=>{
-
-        rows+=`
-
-        <tr>
-
-        <td>
-        ${item.time}
-        </td>
-
-        <td>
-        ${item.name}
-        </td>
-
-        <td>
-        ${item.school}
-        </td>
-
-        <td>
-        ${item.score}
-        </td>
-
-        <td>
-        ${item.percent}%
-        </td>
-
-        <td>
-        ${item.solo}
-        </td>
-
-        <td>
-        ${item.critical}
-        </td>
-
-        </tr>
-
-        `;
-
-    });
-
-    document.getElementById(
-        "dashboardRows"
-    ).innerHTML=
-        rows;
-
+    renderer.render(scene, camera);
 }
 
+let isChestTriggered = false;
+function checkChestCollision() {
+    if (isChestTriggered) return;
+    const dist = player.position.distanceTo(treasureChest.position);
+    if (dist < 1.8) {
+        isChestTriggered = true;
+        openDrillScreen();
+    }
+}
 
-/* ==========================================
-   CSV
-========================================== */
+/* ==========================================================================
+   GAMEFLOW CONTROLLER
+   ========================================================================== */
 
-function downloadCSV(){
+function startGame() {
+    const sName = document.getElementById('input-student-name').value.trim();
+    const schName = document.getElementById('input-school-name').value.trim();
 
-    let records=
-        JSON.parse(
-            localStorage.getItem(
-                "TreasureQuestChapter3"
-            ) || "[]"
-        );
-
-    if(!records.length){
-
-        alert(
-            "Belum ada data siswa."
-        );
-
+    if (!sName || !schName) {
+        alert("Mohon isi Nama Siswa dan Nama Sekolah terlebih dahulu!");
         return;
     }
 
-    let header=[
-        "Waktu",
-        "Nama Siswa",
-        "Sekolah",
-        "Skor",
-        "Persentase",
-        "SOLO",
-        "Critical Thinking"
-    ];
+    gameState.studentName = sName;
+    gameState.schoolName = schName;
+    gameState.currentLevel = 1;
+    gameState.score = 0;
 
-    let rows=[
-        header
-    ];
+    document.getElementById('hud-name').innerText = sName;
+    document.getElementById('hud-level').innerText = gameState.currentLevel;
+    document.getElementById('hud-score').innerText = gameState.score;
 
-    records.forEach(item=>{
+    document.getElementById('screen-login').classList.add('hidden');
+    document.getElementById('hud').classList.remove('hidden');
+    document.getElementById('controls-hint').classList.remove('hidden');
 
-        rows.push([
+    init3D();
+    resetPlayerPosition();
+}
 
-            item.time,
+function resetPlayerPosition() {
+    player.position.set(0, 0, 5);
+    isChestTriggered = false;
+}
+    /* STEP 1: DRILLING & TPR SCREEN */
+function openDrillScreen() {
+    gameState.currentDrillIndex = 0;
+    document.getElementById('screen-drill').classList.remove('hidden');
+    showDrillItem();
+}
 
-            item.name,
+function showDrillItem() {
+    const list = drillDatabase[gameState.currentLevel];
+    const item = list[gameState.currentDrillIndex];
 
-            item.school,
+    const container = document.getElementById('drill-content');
+    container.innerHTML = `
+        <div class="vocab-word">${item.word}</div>
+        <div class="vocab-phonetic">Cara Pengucapan: ${item.phonetic}</div>
+        <div class="vocab-meaning">Arti Bahasa Indonesia: "${item.meaning}"</div>
+        <div class="tpr-box">
+            <i class="fa-solid fa-person-running"></i> <b>Latihan Gerakan (TPR):</b><br>${item.tpr}
+        </div>
+    `;
 
-            item.score,
+    speakText(item.word);
 
-            item.percent+"%",
+    const btnNext = document.getElementById('btn-next-drill');
+    if (gameState.currentDrillIndex >= list.length - 1) {
+        btnNext.innerHTML = 'Lanjut ke Story Cerita <i class="fa-solid fa-book"></i>';
+    } else {
+        btnNext.innerHTML = 'Lanjut Kosakata <i class="fa-solid fa-arrow-right"></i>';
+    }
+}
 
-            item.solo,
+function playCurrentAudio() {
+    const list = drillDatabase[gameState.currentLevel];
+    const item = list[gameState.currentDrillIndex];
+    speakText(item.word);
+}
 
-            item.critical
+function nextDrillItem() {
+    const list = drillDatabase[gameState.currentLevel];
+    if (gameState.currentDrillIndex < list.length - 1) {
+        gameState.currentDrillIndex++;
+        showDrillItem();
+    } else {
+        document.getElementById('screen-drill').classList.add('hidden');
+        openStoryScreen();
+    }
+}
 
-        ]);
+/* STEP 2: STORY SCREEN */
+function openStoryScreen() {
+    document.getElementById('screen-story').classList.remove('hidden');
+    const story = storyDatabase[gameState.currentLevel];
+    
+    document.getElementById('story-content').innerHTML = `
+        <div class="speaker-name"><i class="fa-solid fa-user-ninja"></i> Tokoh: ${story.speaker}</div>
+        <p style="font-size: 1.2rem; margin-top: 10px;">"${story.text}"</p>
+    `;
+    speakText(story.text, 'id-ID');
+}
 
+function playStoryAudio() {
+    const story = storyDatabase[gameState.currentLevel];
+    speakText(story.text, 'id-ID');
+}
+
+function finishStoryGoToQuestion() {
+    document.getElementById('screen-story').classList.add('hidden');
+    gameState.currentQuestionIndex = 0;
+    openQuestionScreen();
+}
+
+/* STEP 3: QUESTION & HOTS SCREEN */
+function openQuestionScreen() {
+    document.getElementById('screen-question').classList.remove('hidden');
+    showQuestion();
+}
+
+function showQuestion() {
+    const qList = questionDatabase[gameState.currentLevel];
+    const q = qList[gameState.currentQuestionIndex];
+
+    document.getElementById('question-number-tag').innerText = `Soal ${gameState.currentQuestionIndex + 1} dari 10`;
+    
+    const soloTag = document.getElementById('question-level-tag');
+    soloTag.innerText = `Taksonomi SOLO: ${q.solo}` + (q.hots ? " | HOTS" : "");
+    soloTag.className = q.hots ? "badge-hots" : "badge-solo";
+
+    document.getElementById('question-text').innerText = q.text;
+
+    const optContainer = document.getElementById('options-container');
+    optContainer.innerHTML = '';
+    
+    document.getElementById('explanation-container').classList.add('hidden');
+    document.getElementById('btn-next-question').classList.add('hidden');
+
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<b>${String.fromCharCode(65 + idx)}.</b> ${opt}`;
+        btn.onclick = () => selectAnswer(idx);
+        optContainer.appendChild(btn);
     });
 
-    let csv=
-        rows
-        .map(row=>
-            row
-            .map(value=>
-                `"${String(value)
-                .replace(/"/g,'""')}"`
-            )
-            .join(",")
-        )
-        .join("\n");
-
-    let blob=
-        new Blob(
-            ["\ufeff"+csv],
-            {
-                type:
-                "text/csv;charset=utf-8;"
-            }
-        );
-
-    let link=
-        document.createElement("a");
-
-    link.href=
-        URL.createObjectURL(blob);
-
-    link.download=
-        "Rekap_Treasure_Quest_Chapter3.csv";
-
-    link.click();
-
+    speakText(q.text, 'id-ID');
 }
 
+function selectAnswer(selectedIdx) {
+    const qList = questionDatabase[gameState.currentLevel];
+    const q = qList[gameState.currentQuestionIndex];
+    const expBox = document.getElementById('explanation-container');
+    const nextBtn = document.getElementById('btn-next-question');
 
-/* ==========================================
-   DELETE
-========================================== */
+    // Disable all option buttons
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach(b => b.style.pointerEvents = 'none');
 
-function deleteDashboard(){
-
-    let confirmDelete=
-        confirm(
-            "Pastikan data sudah didownload. Hapus semua rekapan?"
-        );
-
-    if(confirmDelete){
-
-        localStorage.removeItem(
-            "TreasureQuestChapter3"
-        );
-
-        renderDashboard();
-
+    if (selectedIdx === q.correct) {
+        btns[selectedIdx].style.background = '#2ecc71';
+        btns[selectedIdx].style.borderColor = '#27ae60';
+        expBox.className = 'explanation-box exp-correct';
+        expBox.innerHTML = `<b><i class="fa-solid fa-circle-check"></i> Jawaban Benar!</b><br>${q.expCorrect}`;
+        gameState.score += 10;
+        document.getElementById('hud-score').innerText = gameState.score;
+        speakText("Jawaban Benar!", 'id-ID');
+    } else {
+        btns[selectedIdx].style.background = '#e74c3c';
+        btns[selectedIdx].style.borderColor = '#c0392b';
+        btns[q.correct].style.background = '#2ecc71';
+        expBox.className = 'explanation-box exp-wrong';
+        expBox.innerHTML = `<b><i class="fa-solid fa-circle-xmark"></i> Jawaban Kurang Tepat!</b><br>${q.expWrong}`;
+        speakText("Jawaban Kurang Tepat!", 'id-ID');
     }
 
+    expBox.classList.remove('hidden');
+    nextBtn.classList.remove('hidden');
 }
 
-
-/* ==========================================
-   BACK
-========================================== */
-
-function backHome(){
-
-    document
-        .getElementById("dashboardPage")
-        .classList.add("hidden");
-
-    document
-        .getElementById("startPage")
-        .classList.remove("hidden");
-
+function nextQuestion() {
+    if (gameState.currentQuestionIndex < 9) {
+        gameState.currentQuestionIndex++;
+        showQuestion();
+    } else {
+        document.getElementById('screen-question').classList.add('hidden');
+        showLevelComplete();
+    }
 }
 
+/* STEP 4: LEVEL COMPLETE */
+function showLevelComplete() {
+    document.getElementById('screen-level-complete').classList.remove('hidden');
+    document.getElementById('level-complete-title').innerText = `LEVEL ${gameState.currentLevel} SELESAI!`;
+    document.getElementById('level-score-val').innerText = gameState.score;
+
+    // Save record to Teacher database
+    saveTeacherRecord();
+}
+
+function startNextLevel() {
+    document.getElementById('screen-level-complete').classList.add('hidden');
+    if (gameState.currentLevel < 10) {
+        gameState.currentLevel++;
+        document.getElementById('hud-level').innerText = gameState.currentLevel;
+        resetPlayerPosition();
+    } else {
+        alert("Selamat! Kamu telah menyelesaikan seluruh 10 Level Petualangan Harta Karun!");
+        openTeacherDashboard();
+    }
+}
+
+/* ==========================================================================
+   TEACHER DASHBOARD & EXCEL RECAP SYSTEM
+   ========================================================================== */
+
+function saveTeacherRecord() {
+    const record = {
+        no: gameState.teacherRecords.length + 1,
+        name: gameState.studentName,
+        school: gameState.schoolName,
+        level: gameState.currentLevel,
+        score: gameState.score,
+        solo: (gameState.currentLevel <= 3) ? "Unistructural" : (gameState.currentLevel <= 6) ? "Multistructural" : (gameState.currentLevel <= 8) ? "Relational" : "Extended Abstract",
+        hots: (gameState.currentLevel === 10) ? "Tuntas HOTS" : "Progres"
+    };
+
+    gameState.teacherRecords.push(record);
+    renderDashboardTable();
+}
+
+function renderDashboardTable() {
+    const tbody = document.getElementById('dashboard-tbody');
+    tbody.innerHTML = '';
+
+    if (gameState.teacherRecords.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">Belum ada data nilai siswa.</td></tr>`;
+        return;
+    }
+
+    gameState.teacherRecords.forEach((rec, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td><b>${rec.name}</b></td>
+            <td>${rec.school}</td>
+            <td>Level ${rec.level}</td>
+            <td style="color:#2ecc71; font-weight:bold;">${rec.score}</td>
+            <td><span class="badge-solo">${rec.solo}</span></td>
+            <td><span class="badge-hots">${rec.hots}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function openTeacherDashboard() {
+    renderDashboardTable();
+    document.getElementById('screen-dashboard').classList.remove('hidden');
+}
+
+function closeTeacherDashboard() {
+    document.getElementById('screen-dashboard').classList.add('hidden');
+}
+
+function clearTeacherData() {
+    if (confirm("Apakah Bapak/Ibu Guru yakin ingin menghapus seluruh data rekap nilai siswa ini?")) {
+        gameState.teacherRecords = [];
+        renderDashboardTable();
+        alert("Data rekapitulasi berhasil dihapus.");
+    }
+}
+
+function downloadExcelRecap() {
+    if (gameState.teacherRecords.length === 0) {
+        alert("Tidak ada data untuk diunduh!");
+        return;
+    }
+
+    const dataForExcel = gameState.teacherRecords.map(r => ({
+        "No": r.no,
+        "Nama Siswa": r.name,
+        "Sekolah": r.school,
+        "Level Selesai": r.level,
+        "Skor Total": r.score,
+        "Capaian Taksonomi SOLO": r.solo,
+        "Status HOTS": r.hots
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataForExcel);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai Siswa");
+
+    XLSX.writeFile(workbook, `Rekap_Nilai_Bahasa_Inggris_Chapter3_${gameState.schoolName.replace(/\s+/g, '_')}.xlsx`);
+}
 </script>
 
 </body>
